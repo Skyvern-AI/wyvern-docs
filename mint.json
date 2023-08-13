@@ -34,6 +34,10 @@
   },
   "navigation": [
     {
+      "group": "Wyvern",
+      "pages": ["what", "why", "how"]
+    },
+    {
       "group": "Get Started",
       "pages": ["overview", "quickstart"]
     },
