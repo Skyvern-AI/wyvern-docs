@@ -39,11 +39,7 @@
     },
     {
       "group": "Get Started",
-      "pages": ["overview", "quickstart"]
-    },
-    {
-      "group": "Essentials",
-      "pages": ["essentials/markdown", "essentials/code", "essentials/images", "essentials/settings", "essentials/navigation"]
+      "pages": ["quickstart", "tutorials", "references"]
     }
   ],
   "footerSocials": {
