@@ -35,7 +35,7 @@
   "navigation": [
     {
       "group": "Wyvern",
-      "pages": ["what", "why", "how"]
+      "pages": ["what", "why"]
     },
     {
       "group": "Get Started",

@@ -6,7 +6,7 @@ Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview th
 npm i -g mintlify
 ```
 
-Run the following command at the root of your documentation (where mint.json is)
+Run the following command at the root of your documentation (where mint.json is). Currently mintlify only supports node version of v19. Run `nvm use 19` if you have a different node version before running the following command.
 
 ```
 mintlify dev
