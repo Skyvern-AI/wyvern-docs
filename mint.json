@@ -34,12 +34,12 @@
   },
   "navigation": [
     {
-      "group": "Wyvern",
-      "pages": ["what", "why"]
+      "group": "Overview",
+      "pages": ["quickstart", "what", "why"]
     },
     {
       "group": "Get Started",
-      "pages": ["quickstart", "tutorials", "references"]
+      "pages": ["tutorials", "references"]
     }
   ],
   "footerSocials": {
