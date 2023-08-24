@@ -5,9 +5,19 @@ icon: 'code'
 ---
 
 ## Install Wyvern
-Please refer to the [Quickstart](/quickstart)
+<CodeGroup>
 
-Initiate your wyvern repository with `wyvern init` which sets up boilerplate code for you.
+```shell pip
+pip install wyvern-ai
+```
+
+```shell poetry
+poetry add wyvern-ai
+```
+
+</CodeGroup>
+
+This will also install the [wyvern CLI](/references#wyvern-cli)
 
 ## Wyvern Application
 Wyvern application (or Wyvern Service) is built with [fastapi](https://fastapi.tiangolo.com/). Let's see how to build a Wyvern application like the one under `pipelines/main.py` in the boilerplate code:
@@ -34,7 +44,6 @@ INFO:     Uvicorn running on http://0.0.0.0:5001 (Press CTRL+C to quit)
 
 
 ## Define Pipeline
-Coming soon.
 
 
 ## Define Offline Features
