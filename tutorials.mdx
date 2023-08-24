@@ -4,29 +4,48 @@ description: 'This tutorial walks you through how to use Wyvern step by step tow
 icon: 'code'
 ---
 
-## Install And Run Wyvern
+## Install Wyvern
 Please refer to the [Quickstart](/quickstart)
 
-## Create A Production Ranking Pipeline
-Coming soon
+Initiate your wyvern repository with `wyvern init` which sets up boilerplate code for you.
 
-### Define Pipeline
+## Wyvern Application
+Wyvern application (or Wyvern Service) is built with [fastapi](https://fastapi.tiangolo.com/). Let's see how to build a Wyvern application like the one under `pipelines/main.py` in the boilerplate code:
+
+```python
+from wyvern.service import WyvernService
+
+# the app is a fastapi application
+app = WyvernService.generate_app()
+```
+
+Now you can run the application:
+```shell
+wyvern run --path pipelines.main:app
+```
+Output:
+```
+Running your ML application
+INFO:     Started server process [17449]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:5001 (Press CTRL+C to quit)
+```
+
+
+## Define Pipeline
 Coming soon.
 
 
-### Define Offline Features
+## Define Offline Features
 Coming soon.
 
 
-### Define Online Features
+## Define Online Features
 Coming soon.
 
 
-### Define Business Logics
-Coming soon.
-
-
-## Run Your Application
+## Define Business Logics
 Coming soon.
 
 
