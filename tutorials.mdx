@@ -196,6 +196,21 @@ class RealtimeProductQueryFeature(
         )
 ```
 
+## Register Realtime Features
+Now we go back to the `pipelines/main.py` and register the realtime features with Wyvern service:
+```python pipelines/main.py
+from wyvern.service import WyvernService
+
+from pipelines.product_ranking.realtime_features import (
+    RealtimeProductFeature,
+    RealtimeProductQueryFeature,
+)
+
+app = WyvernService.generate_app(
+    realtime_feature_components=[RealtimeProductFeature, RealtimeProductQueryFeature],
+)
+```
+To register realtime features, pass the realtime_feature_components, containing the list of your realtime features, to `WyvernService.generate_app`. This basically tells the Wyvern service that these are available realtime features ready.
 
 ## Define Model
 ```python pipelines/product_ranking/models.py
@@ -310,9 +325,9 @@ class MyRankingPipeline(RankingPipeline[Product]):
         return RankingModel()
 ```
 
-## Register pipeline and realtime features
-Now we go back to the `pipelines/main.py` and register the pipeline and the realtime features with the Wyvern service:
-```
+## Register Pipelines
+Similar to registering realtime features,  register the pipeline with the Wyvern service in `pipelines/main.py`:
+```python pipelines/main.py
 from wyvern.service import WyvernService
 
 from pipelines.product_ranking.ranking_pipeline import MyRankingPipeline
@@ -326,9 +341,9 @@ app = WyvernService.generate_app(
     realtime_feature_components=[RealtimeProductFeature, RealtimeProductQueryFeature],
 )
 ```
-To register the pipeline, pass the the route_components as a list, containing your pipelines, to `WyvernService.generate_app`.
+To register the pipeline, pass the the route_components as a list, containing your pipelines, to `WyvernService.generate_app`. This basically register the /api/v1/ranking route in the Wyvern service.
 
-To register realtime features, pass the realtime_feature_components, containing the list of your realtime features, to `WyvernService.generate_app`
+Now if you do `wyvern run`, your ranking endpoint is ready to serve.
 
 
 ## Define Business Logics
