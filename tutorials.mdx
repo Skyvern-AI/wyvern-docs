@@ -1,11 +1,13 @@
 ---
-title: 'Tutorials'
-description: 'This tutorial walks you through how to use Wyvern step by step toward setting up pipeline like the the one from [Quickstart](/quickstart). There are more explanations of what each component does. Each section builds on the previous ones but it is structured to separate topics so that you can go directly to any section and find information that you need'
-icon: 'code'
+title: "Tutorials"
+description: "This tutorial walks you through how to use Wyvern step by step toward setting up pipeline like the the one from [Quickstart](/quickstart). There are more explanations of what each component does. Each section builds on the previous ones but it is structured to separate topics so that you can go directly to any section and find information that you need"
+icon: "code"
 ---
 
 ## Install Wyvern
+
 <CodeGroup>
+
 
 ```shell pip
 pip install wyvern-ai
@@ -17,9 +19,11 @@ poetry add wyvern-ai
 
 </CodeGroup>
 
+
 This will also install the [wyvern CLI](/references#wyvern-cli)
 
 ## Wyvern Application
+
 Wyvern application (or Wyvern Service) is built with [fastapi](https://fastapi.tiangolo.com/). Let's see how to build a Wyvern application like the one under `pipelines/main.py` in the boilerplate code:
 
 ```python pipelines/main.py
@@ -30,10 +34,13 @@ app = WyvernService.generate_app()
 ```
 
 Now you can run the application:
+
 ```shell
 wyvern run --path pipelines.main:app
 ```
+
 Output:
+
 ```
 Running your ML application
 INFO:     Started server process [17449]
@@ -43,27 +50,31 @@ INFO:     Uvicorn running on http://0.0.0.0:5001 (Press CTRL+C to quit)
 ```
 
 ## Design ML Pipeline
+
 Let's think about the product ranking problem in a marketplace. Your marketplace has thousands or even millions of products and you're using elasticsearch or Algolia to do basic search. Now you want to build a ranking pipeline with Wyvern to superpower power your search with an additional ranking model.
 
-Assuming your search (elasticsearch and algolia are pretty common search solutions nowadays) returns thousands of products. You would like to use your ranking model to guess what are the most relavant products related to the query and to what this particular user is looking for.
+Assuming your search (elasticsearch and algolia are pretty common search solutions nowadays) returns thousands of products. You would like to use your ranking model to guess what are the most relevant products related to the query and to what this particular user is looking for.
 
 We're going to build a linear ranking model considering five factors:
+
 - the search score of the product
 - similarity between the query and the category of the product
 - similarity between the query and the brand of the product
 - similarity between the query and the title of the product
 - similarity between the query and the description of the product
 
-Here's the fomula of the model:
+Here's the formula of the model:
+
 ```shell
 model_score = 2 * search_score + 10 * query_category_similarity + 20 * query_brand_similarity + 22 * query_title_similarity + 13 * query_description_similarity
 ```
 
 What the pipeline does is to get all the features for each product and pass them to the model. As a result, the model returns the score of every product and the pipeline returns the list of ranked products.
 
-
 ## Define schema
+
 Let's define the schema of the product and the schema of the ranking request:
+
 ```python pipelines/product_ranking/schemas.py
 from wyvern.entities.identifier_entities import ProductEntity
 
@@ -82,7 +93,9 @@ class Product(ProductEntity):
 class MyRankingRequest(RankingRequest[Product]):
     candidates: list[Product]
 ```
+
 Here we're using the default RankingRequest with the Product entity we just defined. This actually translates to the following API request schema:
+
 ```json
 {
   "user_page_size": 0,
@@ -111,13 +124,15 @@ Here we're using the default RankingRequest with the Product entity we just defi
 ```
 
 ## Define Realtime Features
+
 For a ML feature, there is usually an entity or a composite of entities that the feature is associated to.
 
 Wyvern has the RealtimeFeatureComponent which allows you to inherit from and define the your feature group. It has three potential inputs: the primary entity, the secondary entity and the request entity.
 
 In the ranking example, there are five features. For each feature, we need to define the entity of the feature.
 
-The enity for the search score of the product is obviously the "product". Here's the definition for this feature:
+The entity for the search score of the product is obviously the "product". Here's the definition for this feature:
+
 ```python pipelines/product_ranking/realtime_features.py
 from wyvern.entities.feature_entities import FeatureData
 from wyvern.components.features.realtime_features_component import (
@@ -197,7 +212,9 @@ class RealtimeProductQueryFeature(
 ```
 
 ## Register Realtime Features
+
 Now we go back to the `pipelines/main.py` and register the realtime features with Wyvern service:
+
 ```python pipelines/main.py
 from wyvern.service import WyvernService
 
@@ -210,9 +227,11 @@ app = WyvernService.generate_app(
     realtime_feature_components=[RealtimeProductFeature, RealtimeProductQueryFeature],
 )
 ```
+
 To register realtime features, pass the realtime_feature_components, containing the list of your realtime features, to `WyvernService.generate_app`. This basically tells the Wyvern service that these are available realtime features ready.
 
 ## Define Model
+
 ```python pipelines/product_ranking/models.py
 import asyncio
 from functools import cached_property
@@ -303,12 +322,15 @@ class RankingModel(
 ```
 
 ## Define Pipeline
+
 A Wyvern pipeline is the API route that defines the logistics of your ML application pipeline and it defines the API endpoint of yours. There are three inputs:
+
 - request schema: the MyRankingRequest we defined in pipelines/product_ranking/schemas.py
 - response schema: the default RankingResponse
 - the machine learning model: the RankingModel we defined in pipelines/product_ranking/models.py
 
 Now let's define a PipelineComponent under `pipelines/product_ranking/ranking_pipeline.py`:
+
 ```python pipelines/product_ranking/ranking_pipeline.py
 from wyvern.components.models.model_component import ModelComponent
 from wyvern.components.ranking_pipeline import RankingPipeline, RankingResponse
@@ -326,7 +348,9 @@ class MyRankingPipeline(RankingPipeline[Product]):
 ```
 
 ## Register Pipelines
-Similar to registering realtime features,  register the pipeline with the Wyvern service in `pipelines/main.py`:
+
+Similar to registering realtime features, register the pipeline with the Wyvern service in `pipelines/main.py`:
+
 ```python pipelines/main.py
 from wyvern.service import WyvernService
 
@@ -341,14 +365,15 @@ app = WyvernService.generate_app(
     realtime_feature_components=[RealtimeProductFeature, RealtimeProductQueryFeature],
 )
 ```
+
 To register the pipeline, pass the the route_components as a list, containing your pipelines, to `WyvernService.generate_app`. This basically register the /api/v1/ranking route in the Wyvern service.
 
 Now if you do `wyvern run`, your ranking endpoint is ready to serve.
 
-
 ## Define Business Logics
+
 Coming soon.
 
-
 ## Writing Tests
+
 Coming soon.
