@@ -66,7 +66,12 @@ We're going to build a linear ranking model considering five factors:
 Here's the formula of the model:
 
 ```shell
-model_score = 2 * search_score + 10 * query_category_similarity + 20 * query_brand_similarity + 22 * query_title_similarity + 13 * query_description_similarity
+model_score =
+    2 * search_score
+    + 10 * query_category_similarity
+    + 20 * query_brand_similarity
+    + 22 * query_title_similarity
+    + 13 * query_description_similarity
 ```
 
 What the pipeline does is to get all the features for each product and pass them to the model. As a result, the model returns the score of every product and the pipeline returns the list of ranked products.
