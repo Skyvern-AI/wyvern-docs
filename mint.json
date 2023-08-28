@@ -42,12 +42,12 @@
       "pages": ["tutorials", "references"]
     },
     {
-      "group": "Advanced",
-      "pages": ["sdk_ref"]
-    },
-    {
       "group": "How Tos",
       "pages": ["experimentation"]
+    },
+    {
+      "group": "Advanced",
+      "pages": ["sdk_ref"]
     }
   ],
   "footerSocials": {
