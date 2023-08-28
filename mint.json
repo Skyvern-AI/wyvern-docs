@@ -44,6 +44,10 @@
     {
       "group": "Advanced",
       "pages": ["sdk_ref"]
+    },
+    {
+      "group": "How Tos",
+      "pages": ["experimentation"]
     }
   ],
   "footerSocials": {
