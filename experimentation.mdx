@@ -1,0 +1,48 @@
+---
+title: 'Experimentation Support'
+description: 'This tutorial explains how to do experiments in your Wyvern Pipelines.'
+icon: 'flask'
+---
+
+Wyvern experimentation framework is designed to be agnostic to your preferred experimentation provider. It is designed
+to be flexible and allow you to use any experimentation provider you want. In this tutorial, we will show you how to
+use Wyvern with [Eppo](https://www.geteppo.com/) as your experimentation provider. Currently, Wyvern only supports Eppo
+as an experimentation provider, but we are working on adding support for other providers.
+
+## Prerequisites
+- Install `wyvern-ai >= 0.0.6` or make sure you have it installed.
+```
+poetry show wyvern-ai
+```
+- Create an account on [Eppo](https://www.geteppo.com/)
+- Set the following environment variables:
+    - `EXPERIMENTATION_ENABLED`: Whether experimentation is enabled, set it to `true`
+    - `EXPERIMENTATION_PROVIDER`: The experimentation provider, set it to `eppo`
+    - `EPPO_API_KEY`: The API key for Eppo, you can find it in your Eppo account
+
+## Assign treatments to your users
+```
+treatment = experimentation_client.get_experiment_result("wyvern-test-feature-flag",
+                                                           request.user.user_id,
+                                                           # Add additional targeting attributes as you defined
+                                                           # them in your experiment in Eppo.
+                                                           # You can add as many as you like but instead of
+                                                           # passing a dictionary, you need to pass them as separate
+                                                           # keyword arguments.
+                                                           userID=12345678)
+```
+
+## Use the treatment in your pipeline
+```
+if treatment == "on":
+    # Do something
+elif treatment == "off":
+    # Do something else
+else:
+    # Do something else
+```
+
+This is how you can use Wyvern with Eppo. If you want to use Wyvern with another experimentation provider, please feel
+free to get your hands dirty and contribute to [Wyvern Library](https://github.com/Wyvern-AI/wyvern). We are always looking for contributors.
+
+[Here is the link to the source code for the experimentation module in Wyvern.](https://github.com/Wyvern-AI/wyvern/tree/main/wyvern/experimentation)
