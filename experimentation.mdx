@@ -22,6 +22,8 @@ poetry show wyvern-ai
 
 ## Assign treatments to your users
 ```
+from wyvern.experimentation.client import experimentation_client
+
 treatment = experimentation_client.get_experiment_result("wyvern-test-feature-flag",
                                                            request.user.user_id,
                                                            # Add additional targeting attributes as you defined
