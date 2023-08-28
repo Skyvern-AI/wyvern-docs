@@ -40,6 +40,10 @@
     {
       "group": "Get Started",
       "pages": ["tutorials", "references"]
+    },
+    {
+      "group": "How Tos",
+      "pages": ["experimentation"]
     }
   ],
   "footerSocials": {
