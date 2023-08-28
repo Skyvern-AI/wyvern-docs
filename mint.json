@@ -40,6 +40,10 @@
     {
       "group": "Get Started",
       "pages": ["tutorials", "references"]
+    },
+    {
+      "group": "Advanced",
+      "pages": ["sdk_ref"]
     }
   ],
   "footerSocials": {
