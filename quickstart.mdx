@@ -1,11 +1,13 @@
 ---
-title: 'Quickstart'
-description: 'Start building your machine learning application'
-icon: 'rocket'
+title: "Quickstart"
+description: "Start building your machine learning application"
+icon: "rocket"
 ---
 
 ## Install Wyvern
+
 <CodeGroup>
+
 
 ```shell pip
 pip install wyvern-ai
@@ -17,15 +19,19 @@ poetry add wyvern-ai
 
 </CodeGroup>
 
-This will also install the [wyvern CLI](/references#wyvern-cli)
+
+This will also install the [wyvern CLI](/cli)
 
 ## Create A New Wyvern ML Application
+
 Once Wyvern is installed, run this command to initialize your Wyvern project:
+
 ```
 wyvern init my-project
 ```
 
 Now that the `wyvern init` has set up your initial repository, you should see the following file structure in the `my-project` repository:
+
 ```
 ├── pipelines
 │   ├── __init__.py
@@ -48,26 +54,29 @@ Now that the `wyvern init` has set up your initial repository, you should see th
 ## Run Your Wyvern ML Application
 
 ### Pre-requisite
+
 1. Redis service
 
 Wyvern uses redis as it's index and feature store. By default, Wyvern connects to the localhost:6379
 
 Your can run this command to install and spin up local redis
+
 ```
 wyvern redis
 ```
 
 ### Run the wyvern service
+
 ```
 wyvern run
 ```
 
 Wyvern spins up a fastapi service with the default ranking API `/api/v1/ranking`. Refer to http://0.0.0.0:5001/redoc#operation/MyRankingPipeline_api_v1_ranking_post for the ranking schema.
 
-
 ### Test ranking request
 
 Assuming you have 24 products and you would like to rank them. Here's a curl request:
+
 ```
 curl --location 'http://0.0.0.0:5001/api/v1/ranking' \
 --header 'Content-Type: application/json' \
@@ -111,39 +120,39 @@ You should see a response like this. The ranking API returns the 8 products/cand
 
 ```json
 {
-    "ranked_candidates": [
-        {
-            "candidate_id": "p9",
-            "ranked_score": 43.13991415724884
-        },
-        {
-            "candidate_id": "p18",
-            "ranked_score": 42.314880208313376
-        },
-        {
-            "candidate_id": "p17",
-            "ranked_score": 41.62010469362527
-        },
-        {
-            "candidate_id": "p3",
-            "ranked_score": 40.48391586690772
-        },
-        {
-            "candidate_id": "p19",
-            "ranked_score": 39.82504624652922
-        },
-        {
-            "candidate_id": "p24",
-            "ranked_score": 39.10042317690844
-        },
-        {
-            "candidate_id": "p11",
-            "ranked_score": 38.670359237541945
-        },
-        {
-            "candidate_id": "p21",
-            "ranked_score": 37.27313489135458
-        }
-    ]
+  "ranked_candidates": [
+    {
+      "candidate_id": "p9",
+      "ranked_score": 43.13991415724884
+    },
+    {
+      "candidate_id": "p18",
+      "ranked_score": 42.314880208313376
+    },
+    {
+      "candidate_id": "p17",
+      "ranked_score": 41.62010469362527
+    },
+    {
+      "candidate_id": "p3",
+      "ranked_score": 40.48391586690772
+    },
+    {
+      "candidate_id": "p19",
+      "ranked_score": 39.82504624652922
+    },
+    {
+      "candidate_id": "p24",
+      "ranked_score": 39.10042317690844
+    },
+    {
+      "candidate_id": "p11",
+      "ranked_score": 38.670359237541945
+    },
+    {
+      "candidate_id": "p21",
+      "ranked_score": 37.27313489135458
+    }
+  ]
 }
 ```
