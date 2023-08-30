@@ -42,6 +42,10 @@
       "pages": ["quickstart", "tutorials", "cli"]
     },
     {
+      "group": "User Manuals",
+      "pages": ["feature_store"]
+    },
+    {
       "group": "How Tos",
       "pages": ["experimentation"]
     },

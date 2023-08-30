@@ -1,0 +1,32 @@
+---
+title: "Wyvern Feature Store"
+description: "This page explains how Wyvern's feature store works."
+icon: "store"
+---
+
+Wyvern Feature Store currently is built on top of feast and provides the following responsibilities:
+
+1. Defining a Feature Registry
+2. Storing historic (date-stamped) feature data for model training
+3. Materializing the latest feature data for real-time model inference
+4. Feature serving: Wyvern provides a default feature store solution which is built on top of feast
+
+## Feature Registry
+
+Wyvern's feature registry is currently built on top of [feast](https://docs.feast.dev). If you're already using feast for
+
+## Feature Materialization
+
+Wyvern uses feast to materialize the latest feature data for real-time model inference
+
+## Get Historical Features
+
+Previously, we talked about how Wyvern pipeline logs real time features generated during inference, which is piped back to your data warehouse.
+
+Wyvern's get_historical_features is built on top of feast's get_historical_features. It aggregates the offline features in your data warehouse (which is supported by feast's get_historical_features) and the historical real-time features being consumed by wyvern pipeline.
+
+This interface returns a curated training feature dataset to use, which are wyvern request based.
+
+## Get Online Features
+
+Get the latest feature data
