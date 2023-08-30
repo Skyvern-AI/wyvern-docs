@@ -43,11 +43,7 @@
     },
     {
       "group": "User Manuals",
-      "pages": ["feature_store"]
-    },
-    {
-      "group": "How Tos",
-      "pages": ["experimentation"]
+      "pages": ["feature_store", "model_service", "experimentation"]
     },
     {
       "group": "Advanced",

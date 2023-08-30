@@ -1,0 +1,48 @@
+---
+title: "Wyvern Model Service"
+description: ""
+icon: "ranking-star"
+---
+
+Wyvern makes it so much easier to define and auto retrieve features you need as well as connecting to your model, whether it's a model that's served on another service or a model that's hosted locally within the wyvern pipeline service.
+
+Wyvern has a [ModelComponent](/sdk_ref#modelcomponent-objects) which is the base component that takes in the inference request and a list of entities, and outputs a model output. The model output is a dictionary mapping entity identifiers to model outputs.
+
+Let's see how ModelComponent actually works
+
+## Model Inference
+
+ModelComponent has an inference function which is the main entrance to model evaluation.
+
+By default, the base ModelComponent slices entities into smaller batches and call batch_inference on each batch.
+
+The default batch size is 30. You should be able to configure the MODEL_BATCH_SIZE env variable to change the batch size.
+
+In order to set up model inference, you only need to define a class that inherits ModelComponent and implement batch_inference.
+
+You can also override this function if you want to customize the inference logic.
+
+[TODO: give an example]
+
+## Register features for the model
+
+Here's an example of defining features you need for your model inference:
+
+```python
+    @cached_property
+    def manifest_feature_names(self) -> Set[str]:
+        return {
+            "RealtimeProductFeature:search_score",
+            "RealtimeProductQueryFeature:query_category_similarity",
+            "RealtimeProductQueryFeature:query_brand_similarity",
+            "RealtimeProductQueryFeature:query_title_similarity",
+            "RealtimeProductQueryFeature:query_description_similarity",
+        }
+```
+
+The `manifest_feature_names` is a @cached_property (you can also just do @property but for cached_property gives a little performance advantage) and is a set of feature strings, with each string in the following format:
+
+- for Wyvern's real-time features: `realtime_feature_component_name` + `:` + `feature_name`. The realtime_feature_component_name is the `name` of the RealtimeFeatureComponent you defined. The default name is the class
+
+Wyvern's framework will use features defined under manifest_feature_names
+[TODO]
