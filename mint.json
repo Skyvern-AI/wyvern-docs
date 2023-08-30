@@ -35,11 +35,11 @@
   "navigation": [
     {
       "group": "Overview",
-      "pages": ["quickstart", "what", "why"]
+      "pages": ["what", "why"]
     },
     {
       "group": "Get Started",
-      "pages": ["tutorials", "references"]
+      "pages": ["quickstart", "tutorials", "cli"]
     },
     {
       "group": "How Tos",
@@ -55,8 +55,8 @@
     "linkedin": "https://www.linkedin.com/company/95726232"
   },
   "feedback": {
-      "thumbsRating": true,
-      "suggestEdit": true,
-      "raiseIssue": true
+    "thumbsRating": true,
+    "suggestEdit": true,
+    "raiseIssue": true
   }
 }
