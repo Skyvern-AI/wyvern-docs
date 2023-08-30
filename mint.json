@@ -39,7 +39,7 @@
     },
     {
       "group": "Get Started",
-      "pages": ["quickstart", "tutorials", "references"]
+      "pages": ["quickstart", "tutorials", "cli"]
     },
     {
       "group": "How Tos",
