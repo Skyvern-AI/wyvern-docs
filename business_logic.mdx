@@ -1,5 +1,35 @@
 ---
 title: "Business Logic"
-description: "Fancy"
+description: ""
 icon: "briefcase"
 ---
+
+This is its own layer as it usually needs to happen as a part of the retrieval layer or it needs to overrule something in the ranking layer. This are things that are hard to teach machine learning models.
+
+After the model returns output, Wyvern supports a business layer which allows you to customize and tune the model behavior on purpose.
+
+## Examples
+
+For example, one important business logic use case in ranking is boosting and burying product. Sometimes, there’s one particular product that you want to promote or demote from your ranking list. For example, if a product violates your use of terms, wyvern offers you the ability to demote or remove the product from the result even though it this product has a great ranking score returned from the model.
+For another example, if we’ve done some analysis that shows that occasionally showing new products in the third position really improves new brand conversion without hurting the user experience.. it’s a simple task to force a product to be in the third slot.
+
+It’s much harder to teach a machine learning model optimized for add to cart conversion that sacrificing some add to cart conversion is acceptable.
+
+## BusinessLogicPipeline
+
+[TODO: drawing for the business logic block]
+
+```python
+class SearchBusinessLogicPipeline(
+    BusinessLogicPipeline[Product, ProductSearchRankingRequest],
+):
+    def __init__(self):
+        """
+        Add new business logic components here. All business logic steps are executed in the order defined here.
+        """
+        super().__init__(
+            BoostUsersPledges(),
+            BoostPushNSFWItemsToTheBottom(),
+            name="search_business_logic_pipeline",
+        )
+```

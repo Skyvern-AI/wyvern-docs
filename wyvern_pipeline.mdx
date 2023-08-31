@@ -4,93 +4,51 @@ description: ""
 icon: "pipe-section"
 ---
 
-A wyvern pipelien defines the end to end flow of the model inference process in your production. It usually is comprised by:
+## Set Up Pipeline
 
-- feature retrieval
-- realtime feature generation
-- model inference
-- business logic
-- event logging
+A Wyvern pipeline is the API route that defines the logistics of your ML application pipeline and it defines the API endpoint of yours. There are three inputs:
 
-The pipeline orchestrates all the feature data going into the model, data getting out of the model, and logging all the data to a standard format.
+- request schema: the MyRankingRequest we defined in pipelines/product_ranking/schemas.py
+- response schema: the default RankingResponse
+- the machine learning model: the RankingModel we defined in pipelines/product_ranking/models.py
 
-Let's see how to define and set up a Machine Learning Pipeline with Wyvern
+Now let's define a PipelineComponent under `pipelines/product_ranking/ranking_pipeline.py`:
 
-## Define ML Pipeline
+```python pipelines/product_ranking/ranking_pipeline.py
+from wyvern.components.models.model_component import ModelComponent
+from wyvern.components.ranking_pipeline import RankingPipeline, RankingResponse
 
-First, let's think about the product ranking problem in a marketplace. Your marketplace has thousands or even millions of products and you're using elasticsearch or Algolia to do basic search. Now you want to build a ranking pipeline with Wyvern to superpower power your search with an additional ranking model.
+from pipelines.product_ranking.models import RankingModel
+from pipelines.product_ranking.schemas import MyRankingRequest, Product
 
-Assuming your search (elasticsearch and algolia are pretty common search solutions nowadays) returns thousands of products. You would like to use your ranking model to guess what are the most relevant products related to the query and to what this particular user is looking for.
 
-We're going to build a linear ranking model considering five factors:
+class MyRankingPipeline(RankingPipeline[Product]):
+    REQUEST_SCHEMA_CLASS = MyRankingRequest
+    RESPONSE_SCHEMA_CLASS = RankingResponse
 
-- the search score of the product
-- similarity between the query and the category of the product
-- similarity between the query and the brand of the product
-- similarity between the query and the title of the product
-- similarity between the query and the description of the product
-
-Here's the formula of the model:
-
-```shell
-model_score =
-    2 * search_score
-    + 10 * query_category_similarity
-    + 20 * query_brand_similarity
-    + 22 * query_title_similarity
-    + 13 * query_description_similarity
+    def get_model(self) -> ModelComponent:
+        return RankingModel()
 ```
 
-What the pipeline does is to get all the features for each product and pass them to the model. As a result, the model returns the score of every product and the pipeline returns the list of ranked products.
+## Register Pipelines
 
-## Define Schemas
+Similar to registering realtime features, register the pipeline with the Wyvern service in `pipelines/main.py`:
 
-Let's define the schema of the product and the schema of the ranking request:
+```python pipelines/main.py
+from wyvern.service import WyvernService
 
-```python pipelines/product_ranking/schemas.py
-from wyvern.entities.identifier_entities import ProductEntity
+from pipelines.product_ranking.ranking_pipeline import MyRankingPipeline
+from pipelines.product_ranking.realtime_features import (
+    RealtimeProductFeature,
+    RealtimeProductQueryFeature,
+)
 
-
-class Product(ProductEntity):
-    brand: str | None = None
-    category: str | None = None
-    categories: list[str] = []
-    title: str | None = None
-    description: str | None = None
-    price: float | None = None
-    number_in_stock: int | None = None
-    search_score: float | None = None
-
-
-class MyRankingRequest(RankingRequest[Product]):
-    candidates: list[Product]
+app = WyvernService.generate_app(
+    route_components=[MyRankingPipeline],
+    realtime_feature_components=[RealtimeProductFeature, RealtimeProductQueryFeature],
+)
 ```
 
-Here we're using the default RankingRequest with the Product entity we just defined. This actually translates to the following API request schema:
+To register the pipeline, pass the the route_components as a list, containing your pipelines, to `WyvernService.generate_app`. This basically register the /api/v1/ranking route in the Wyvern service.
 
-```json
-{
-  "user_page_size": 0,
-  "user_page": 0,
-  "candidate_page_size": 0,
-  "candidate_page": 0,
-  "request_id": "string",
-  "include_events": false,
-  "query": {
-    "query": "string"
-  },
-  "candidates": [
-    {
-      "product_id": "string",
-      "brand": "string",
-      "category": "string",
-      "categories": [],
-      "title": "string",
-      "description": "string",
-      "price": 0,
-      "number_in_stock": 0,
-      "search_score": 0
-    }
-  ]
-}
-```
+Now if you do `wyvern run`, your ranking endpoint is ready to serve a request.
