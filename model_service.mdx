@@ -4,7 +4,7 @@ description: ""
 icon: "ranking-star"
 ---
 
-Wyvern makes it so much easier to define and auto retrieve features you need as well as connecting to your model, whether it's a model that's served on another service or a model that's hosted locally within the wyvern pipeline service.
+Wyvern makes it so much easier to define and auto retrieve features you need as well as connecting to your model, whether it's a model that's served from another service or a model that's hosted locally within the wyvern pipeline service.
 
 Wyvern has a [ModelComponent](/sdk_ref#modelcomponent-objects) which is the base component that takes in the inference request and a list of entities, and outputs a model output. The model output is a dictionary mapping entity identifiers to model outputs.
 
@@ -14,9 +14,7 @@ Let's see how ModelComponent actually works
 
 ModelComponent has an inference function which is the main entrance to model evaluation.
 
-By default, the base ModelComponent slices entities into smaller batches and call batch_inference on each batch.
-
-The default batch size is 30. You should be able to configure the MODEL_BATCH_SIZE env variable to change the batch size.
+By default, the base ModelComponent slices entities into smaller batches and call batch_inference on each batch. The default batch size is 30. You should be able to configure the MODEL_BATCH_SIZE env variable to change the batch size.
 
 In order to set up model inference, you only need to define a class that inherits ModelComponent and implement batch_inference.
 
@@ -43,6 +41,110 @@ Here's an example of defining features you need for your model inference:
 The `manifest_feature_names` is a @cached_property (you can also just do @property but for cached_property gives a little performance advantage) and is a set of feature strings, with each string in the following format:
 
 - for Wyvern's real-time features: `realtime_feature_component_name` + `:` + `feature_name`. The realtime_feature_component_name is the `name` of the RealtimeFeatureComponent you defined. The default name is the class
+- for batch features: FEATURE_VIEW + `:` + FEATURE_NAME
 
 Wyvern's framework will use features defined under manifest_feature_names
-[TODO]
+
+## Define the whole model
+
+```python pipelines/product_ranking/models.py
+import asyncio
+from functools import cached_property
+from typing import List, Set
+
+from wyvern.components.models.model_component import (
+    ModelComponent,
+    ModelInput,
+    ModelOutput,
+)
+from wyvern.components.ranking_pipeline import RankingRequest
+from wyvern.entities.identifier import CompositeIdentifier
+
+from pipelines.product_ranking.schemas import Product
+
+
+class RankingModel(
+    ModelComponent[
+        ModelInput[
+            Product,
+            RankingRequest[Product],
+        ],
+        ModelOutput[float],
+    ],
+):
+    @cached_property
+    def manifest_feature_names(self) -> Set[str]:
+        return {
+            "RealtimeProductFeature:search_score",
+            "RealtimeProductQueryFeature:query_category_similarity",
+            "RealtimeProductQueryFeature:query_brand_similarity",
+            "RealtimeProductQueryFeature:query_title_similarity",
+            "RealtimeProductQueryFeature:query_description_similarity",
+        }
+
+    async def batch_inference(
+        self,
+        request: RankingRequest[Product],
+        entities: List[Product],
+        **kwargs,
+    ) -> List[float]:
+        return await asyncio.gather(
+            *[self._inference_helper(request, entity) for entity in entities]
+        )
+
+    async def _inference_helper(
+        self,
+        request: RankingRequest[Product],
+        entity: Product,
+    ) -> float:
+        score = 0.0
+        composite_identifier = CompositeIdentifier(
+            primary_identifier=entity.identifier,
+            secondary_identifier=request.query.identifier,
+        )
+        search_score = self.get_feature(
+            entity.identifier,
+            "RealtimeProductFeature:search_score",
+        )
+        query_category_similarity = self.get_feature(
+            composite_identifier,
+            "RealtimeProductQueryFeature:query_category_similarity",
+        )
+        query_brand_similarity = self.get_feature(
+            composite_identifier,
+            "RealtimeProductQueryFeature:query_brand_similarity",
+        )
+        query_title_similarity = self.get_feature(
+            composite_identifier,
+            "RealtimeProductQueryFeature:query_title_similarity",
+        )
+        query_description_similarity = self.get_feature(
+            composite_identifier,
+            "RealtimeProductQueryFeature:query_description_similarity",
+        )
+        if search_score:
+            score += 2 * search_score
+        if query_category_similarity:
+            score += 10 * query_category_similarity
+        if query_brand_similarity:
+            score += 20 * query_brand_similarity
+        if query_title_similarity:
+            score += 22 * query_title_similarity
+        if query_description_similarity:
+            score += 13 * query_description_similarity
+
+        return score
+```
+
+As you could see in the example, the RankingModel inherits ModelComponent and defines manifest_feature_names and batch_inference. The batch_inference defines the behavior of model for batch inference. In this example of the `_inference_helper`, each inference is pretty much handling the formula we've talked about, which is:
+
+```shell
+model_score =
+    2 * search_score
+    + 10 * query_category_similarity
+    + 20 * query_brand_similarity
+    + 22 * query_title_similarity
+    + 13 * query_description_similarity
+```
+
+After the model is defined, now let's go back to "Wyvern Pipeline" and see how to set up a pipeline in the code in the next page.

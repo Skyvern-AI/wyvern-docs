@@ -1,0 +1,98 @@
+---
+title: "Wyvern Pipeline Concept"
+description: ""
+icon: "pipe-section"
+---
+
+A wyvern pipelien defines the end to end flow of the model inference process in your production. It usually is comprised by:
+
+- feature retrieval
+- realtime feature generation
+- model inference
+- business logic
+- event logging
+
+The pipeline orchestrates all the feature data going into the model, data getting out of the model, and logging all the data to a standard format.
+
+Let's see how to define and set up a Machine Learning Pipeline with Wyvern
+
+## Define ML Pipeline
+
+First, let's think about the product ranking problem in a marketplace. Your marketplace has thousands or even millions of products and you're using elasticsearch or Algolia to do basic search. Now you want to build a ranking pipeline with Wyvern to superpower power your search with an additional ranking model.
+
+Assuming your search (elasticsearch and algolia are pretty common search solutions nowadays) returns thousands of products. You would like to use your ranking model to guess what are the most relevant products related to the query and to what this particular user is looking for.
+
+We're going to build a linear ranking model considering five factors:
+
+- the search score of the product
+- similarity between the query and the category of the product
+- similarity between the query and the brand of the product
+- similarity between the query and the title of the product
+- similarity between the query and the description of the product
+
+Here's the formula of the model:
+
+```shell
+model_score =
+    2 * search_score
+    + 10 * query_category_similarity
+    + 20 * query_brand_similarity
+    + 22 * query_title_similarity
+    + 13 * query_description_similarity
+```
+
+What the pipeline does is to get all the features for each product and pass them to the model. As a result, the model returns the score of every product and the pipeline returns the list of ranked products.
+
+## Define Schemas
+
+To start building a Wyvern Pipeline, we should define the schema first. In the ranking case, we start by defining the product and the ranking request schemas:
+
+```python pipelines/product_ranking/schemas.py
+from wyvern.entities.identifier_entities import ProductEntity
+
+
+class Product(ProductEntity):
+    brand: str | None = None
+    category: str | None = None
+    categories: list[str] = []
+    title: str | None = None
+    description: str | None = None
+    price: float | None = None
+    number_in_stock: int | None = None
+    search_score: float | None = None
+
+
+class MyRankingRequest(RankingRequest[Product]):
+    candidates: list[Product]
+```
+
+Here we're using the default RankingRequest with the Product entity we just defined. This actually translates to the following API request schema:
+
+```json
+{
+  "user_page_size": 0,
+  "user_page": 0,
+  "candidate_page_size": 0,
+  "candidate_page": 0,
+  "request_id": "string",
+  "include_events": false,
+  "query": {
+    "query": "string"
+  },
+  "candidates": [
+    {
+      "product_id": "string",
+      "brand": "string",
+      "category": "string",
+      "categories": [],
+      "title": "string",
+      "description": "string",
+      "price": 0,
+      "number_in_stock": 0,
+      "search_score": 0
+    }
+  ]
+}
+```
+
+Next, let's see how feature retrieval works to understand and how Wyvern makes it easy to orchestrates ML features. We will come back to talk about how to set up a wyvern ML pipeline later.

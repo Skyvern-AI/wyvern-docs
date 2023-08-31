@@ -39,15 +39,17 @@
     },
     {
       "group": "Get Started",
-      "pages": ["quickstart", "tutorials", "cli"]
+      "pages": ["quickstart", "cli"]
     },
     {
       "group": "Wyvern ML Pipeline",
       "pages": [
         "wyvern_application",
+        "ml_pipeline",
         "feature_retrieval",
         "realtime_feature",
         "model_service",
+        "wyvern_pipeline",
         "business_logic",
         "logging_events",
         "experimentation",
