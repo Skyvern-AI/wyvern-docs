@@ -42,8 +42,28 @@
       "pages": ["quickstart", "tutorials", "cli"]
     },
     {
-      "group": "User Manuals",
-      "pages": ["feature_store", "model_service", "experimentation"]
+      "group": "Wyvern ML Pipeline",
+      "pages": [
+        "wyvern_application",
+        "feature_retrieval",
+        "realtime_feature",
+        "model_service",
+        "business_logic",
+        "logging_events",
+        "experimentation",
+        "observability"
+      ]
+    },
+    {
+      "group": "Wyvern Feature Engineering",
+      "pages": [
+        "feature_registry",
+        "online_features",
+        "offline_features",
+        "materialization",
+        "training_data",
+        "access_to_log_events"
+      ]
     },
     {
       "group": "Advanced",
