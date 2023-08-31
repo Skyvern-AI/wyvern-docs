@@ -6,20 +6,19 @@ icon: "notes"
 
 Wyvern has a standardized way of logging events that’s useful either for debugging, observability and training/improving your models. Here are the events wyvern records:
 
-| Event Type                         | Explanation                                                                                                                                                           | Data Being Logged                                                                                                                                                                                         |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Candidate event                    | Wyvern records each candidate passed into Wyvern from it’s caller.                                                                                                    | 1. The entity id (ie product_id)<br />2. The entity score (from your search, OpenSearch or algolia)<br />3. The candidate order (from from your search)                                                   |
-| Feature event                      | Wyvern records each feature generated for the purposes of evaluating model                                                                                            | 1. The entity id (ie product_id)<br />2. The feature identifier (ie what entity the feature corresponds to.. for example the entity’s brand, or query:product)<br />3. feature name<br />4. feature value |
-| Model event                        | Wyvern records the model scores for each candidate. This includes the actual predictions for each model that’s evaluated, including the ensembling of multiple models | 1. The entity id<br />2. The model source                                                                                                                                                                 |
+| Event Type | Explanation | Data Being Logged | | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Candidate event | Wyvern records each candidate passed into Wyvern from it’s caller. | 1. The entity id (ie product_id)<br />2. The entity score (from your search, OpenSearch or algolia)<br />3. The candidate order (from from your search) |
+| Feature event | Wyvern records each feature generated for the purposes of evaluating model | 1. The entity id (ie product_id)<br />2. The feature identifier (ie what entity the feature corresponds to.. for example the entity’s brand, or query:product)<br />3. feature name<br />4. feature value |
+| Model event | Wyvern records the model scores for each candidate. This includes the actual predictions for each model that’s evaluated, including the ensembling of multiple models | 1. The entity id<br />2. The model source |
 | <br />3. The model generated score |
-| Business logic event               | Wyvern records each candidate which had business logic applied to it. whether the ML model results was modified or not and what was change was)                       | 1. The entity id (ie product_id)<br />2. The business logic application source<br />3. The original candidate score<br />4. The adjusted candidate score                                                  |
-| Impression event                   | Wyvern records the final scores for each candidate, after it has gone through Model Scoring and Business logic pipelines                                              | 1. Impression id<br />2. Impression type<br />3. Impression order (this will be 0 for non-ranking situations)<br />4. Impression score                                                                    |
+| Business logic event | Wyvern records each candidate which had business logic applied to it. whether the ML model results was modified or not and what was change was) | 1. The entity id (ie product_id)<br />2. The business logic application source<br />3. The original candidate score<br />4. The adjusted candidate score |
+| Impression event | Wyvern records the final scores for each candidate, after it has gone through Model Scoring and Business logic pipelines | 1. Impression id<br />2. Impression type<br />3. Impression order (this will be 0 for non-ranking situations)<br />4. Impression score |
 
 ## Integration
 
 To enable Wyvern event logging, set the `EVENT_LOGGING_ENABLED=true` in your environment.
 
-## Raw Logging Integration
+### Raw Logging Integration
 
 Currently wyvern is only integrated with AWS kinesis, which sends all the events to your destination.
 
@@ -33,8 +32,8 @@ Steps to set up kinesis with Wyvern:
 - AWS_SECRET_ACCESS_KEY
 - AWS_REGION_NAME
 
-## Data Warehouse Integration
+### Data Warehouse Integration
 
-### Snowflake
+#### Snowflake
 
 Use [snowpipe auto ingest](https://docs.snowflake.com/en/user-guide/data-load-snowpipe-auto-s3) to ingest wyvern's events to your data warehouse.
