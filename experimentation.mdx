@@ -1,7 +1,7 @@
 ---
-title: 'Experimentation Support'
-description: 'This tutorial explains how to do experiments in your Wyvern Pipelines.'
-icon: 'flask'
+title: "Experimentation Support"
+description: "This tutorial explains how to do experiments in your Wyvern Pipelines."
+icon: "flask"
 ---
 
 Wyvern experimentation framework is designed to be agnostic to your preferred experimentation provider. It is designed
@@ -10,29 +10,34 @@ use Wyvern with [Eppo](https://www.geteppo.com/) as your experimentation provide
 as an experimentation provider, but we are working on adding support for other providers.
 
 ## Prerequisites
+
 - [Install `wyvern-ai`](https://docs.wyvern.ai/quickstart#install-wyvern)
 - Create an account on [Eppo](https://www.geteppo.com/)
 - Set the following environment variables:
-    - `EXPERIMENTATION_ENABLED`: Whether experimentation is enabled, set it to `true`
-    - `EXPERIMENTATION_PROVIDER`: The experimentation provider, set it to `eppo`
-    - `EPPO_API_KEY`: The API key for Eppo, you can find it in your Eppo account
+  - `EXPERIMENTATION_ENABLED`: Whether experimentation is enabled, set it to `true`
+  - `EXPERIMENTATION_PROVIDER`: The experimentation provider, set it to `eppo`
+  - `EPPO_API_KEY`: The API key for Eppo, you can find it in your Eppo account
 
 ## Assign treatments to your users
-```
+
+```python
 from wyvern.experimentation.client import experimentation_client
 
-treatment = experimentation_client.get_experiment_result("wyvern-test-feature-flag",
-                                                           request.user.user_id,
-                                                           # Add additional targeting attributes as you defined
-                                                           # them in your experiment in Eppo.
-                                                           # You can add as many as you like but instead of
-                                                           # passing a dictionary, you need to pass them as separate
-                                                           # keyword arguments.
-                                                           userID=12345678)
+treatment = experimentation_client.get_experiment_result(
+    "wyvern-test-feature-flag",
+    request.user.user_id,
+    # Add additional targeting attributes as you defined
+    # them in your experiment in Eppo.
+    # You can add as many as you like but instead of
+    # passing a dictionary, you need to pass them as separate
+    # keyword arguments.
+    userID=12345678,
+)
 ```
 
 ## Use the treatment in your pipeline
-```
+
+```python
 if treatment == "on":
     # Do something
 elif treatment == "off":

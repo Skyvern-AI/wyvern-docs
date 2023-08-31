@@ -22,60 +22,6 @@ poetry add wyvern-ai
 
 This will also install the [wyvern CLI](/cli)
 
-## Wyvern Application
-
-Wyvern application (or Wyvern Service) is built with [fastapi](https://fastapi.tiangolo.com/). Let's see how to build a Wyvern application like the one under `pipelines/main.py` in the boilerplate code:
-
-```python pipelines/main.py
-from wyvern.service import WyvernService
-
-# the app is a fastapi application
-app = WyvernService.generate_app()
-```
-
-Now you can run the application:
-
-```shell
-wyvern run --path pipelines.main:app
-```
-
-Output:
-
-```
-Running your ML application
-INFO:     Started server process [17449]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:5001 (Press CTRL+C to quit)
-```
-
-## Design ML Pipeline
-
-Let's think about the product ranking problem in a marketplace. Your marketplace has thousands or even millions of products and you're using elasticsearch or Algolia to do basic search. Now you want to build a ranking pipeline with Wyvern to superpower power your search with an additional ranking model.
-
-Assuming your search (elasticsearch and algolia are pretty common search solutions nowadays) returns thousands of products. You would like to use your ranking model to guess what are the most relevant products related to the query and to what this particular user is looking for.
-
-We're going to build a linear ranking model considering five factors:
-
-- the search score of the product
-- similarity between the query and the category of the product
-- similarity between the query and the brand of the product
-- similarity between the query and the title of the product
-- similarity between the query and the description of the product
-
-Here's the formula of the model:
-
-```shell
-model_score =
-    2 * search_score
-    + 10 * query_category_similarity
-    + 20 * query_brand_similarity
-    + 22 * query_title_similarity
-    + 13 * query_description_similarity
-```
-
-What the pipeline does is to get all the features for each product and pass them to the model. As a result, the model returns the score of every product and the pipeline returns the list of ranked products.
-
 ## Define schema
 
 Let's define the schema of the product and the schema of the ranking request:

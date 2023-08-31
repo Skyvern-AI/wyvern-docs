@@ -1,0 +1,24 @@
+---
+title: "Feature Retrieval"
+description: ""
+icon: "get-pocket"
+---
+
+One main design goal of Wyvern is to define a standard way of how machine learning features are defined, retrieved and passed to models by Wyvern's framework. Once features are defined, Wyvern automates the whole retrieval process.
+
+## Wyvern Entity
+
+A Wyvern entity (represented by the [WyvernEntity](/sdk_ref#wyvernentity-objects) in code) is the basic unit of data structure that represents a critical object in your ML pipline that could be indexed and queried. It's like the database table concept. For example in the case of product ranking, "product", "user", "query" or even the "request" are all important entities.
+
+## Wyvern Index and Data Hydration
+
+Wyvern current integrates redis as it's index, where the [Near Realtime or Streaming Features](https://huyenchip.com/2023/01/08/self-serve-feature-platforms.html#batch-vs-real-time-vs-nrt-features) of an entity are stored. The concept is quite similar to [the elasticsearch index](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
+
+At the beginning of a wyvern inference request, Wyvern grabs all the entities contained in the request schema, fetches all the data from Wyvern Index if exists and "hydrate" all the data into the entity object. Therefore, even if your API request is only sending the primary key of the entity, the pipeline code will still have full access to all the indexed data attributes of the entity. This is the what is called the "Data Hydration" phase.
+
+There are two big reasons for why Wyvern Index is designed:
+
+1. Less hassle. No need to think of fetching, parsing and passing along the entity metadata to the ML pipeline. Wyvern handles it.
+2. Less overhead and . Imaging you have to send all your product catelog data for hundreds of products through network, it's a lot. Only pass the entity ids along.
+
+Next, let's see how realtime features are defined in Wyvern.
