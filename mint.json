@@ -59,10 +59,12 @@
     {
       "group": "Wyvern Feature Engineering",
       "pages": [
+        "feature_engineering_overview",
         "feature_registry",
-        "online_features",
-        "offline_features",
+        "online_stores",
+        "offline_stores",
         "materialization",
+        "feature_logging",
         "training_data",
         "access_to_log_events"
       ]

@@ -1,0 +1,40 @@
+---
+title: "Feature Engineering Overview"
+description: ""
+icon: ""
+---
+
+Wyvern's feature engineering solution is built on top of the open source feature store solution [feast](https://feast.dev/) and provides the following functionalities:
+
+1. Feature registry
+2. Online features: storing feature data in cache real-time model inference
+3. Near real-time materialization: once your feature data shows up in your data warehouse, materialization happens right after and update the online feature store real-time model inference
+4. Historical features: it provides get_historical_features interface, which not only covers offline features from the original features table but also covers the real-time features logged back to your data warehouse.
+
+## Wyvern Feature Store
+
+Similar to the Wyvern application, Wyvern Feature Store is also built with FastAPI. To run the feature store server:
+
+```features/main.py
+from wyvern import generate_wyvern_store_app
+
+feature_store_app = generate_wyvern_store_app(path="path_to_feature_repo")
+```
+
+Now run:
+
+```
+uvicorn features.main:app
+```
+
+### APIs
+
+#### oneline feature API
+
+The default API path is `/feature/get-online-features`. You can also configure the path with the `WYVERN_ONLINE_FEATURES_PATH` environment var.
+
+#### historical feature API
+
+The default API path is `/feature/get-historical-features`. You can also configure the path with the `WYVERN_HISTORICAL_FEATURES_PATH` environment var.
+
+Let's go to the next page to learn more.

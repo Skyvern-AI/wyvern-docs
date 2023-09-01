@@ -1,0 +1,13 @@
+---
+title: "Feature Logging"
+description: ""
+icon: ""
+---
+
+The most important aspect of any machine learning system is its ability to learn over time. Most Feature stores enable this by capturing a historic log of feature data and allowing users’ to do point-in-time joins with particular events to retrain models. This fully captures all batch and semi-realtime machine learning situations.
+
+Feature logging is necessary when moving to a true real-time machine learning system as some states will be extremely error-prone to reproduce online. Consider the case when your model uses session-based information such as “last query” to predict real user intent. Reproducing this correctly offline can be a challenging process: you have to consider delays in having that information propaged through online systems, you have to craft your session-level joins correctly, etc. While solvable, it’s an extremely error prone process, with errors manifesting subtly **via offline / online skew**
+
+Feature logging is a solution to that problem. All things that are computed “online” and error prone will have their features logged back to the data warehouse to produce clean training data. This will be representative of all bugs and system nuances that are present in the online system, whether it’s intentional or not.
+
+We will support feature logging out of the box for offline and online features, allowing you to customize whether you want to log them or not.
