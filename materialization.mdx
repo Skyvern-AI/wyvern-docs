@@ -1,7 +1,21 @@
 ---
-title: "Materialization"
+title: "Feature Materialization"
 description: ""
 icon: ""
 ---
 
-Coming soon...
+## What is feature materialization
+
+Feature materialization is the process of pushing your offline features into online store like redis, which is close to your Wyvern application so that getting feature data during a production request is done with little latency.
+
+You can leverage `feast materialize` for your materialization process or the `/feature/materialize` API if you're using Wyvern Feature Store.
+
+[Wyvern Cloud](https://www.wyvern.ai) supports auto feature materialization which ensures materialization happens within 5 mins after new feature data lands on your offline store. This would keep your keep your feature data in your online store as fresh as possible.
+
+### Materialization Rollback
+
+After bad data gets pushed to your offline store, how to fix it?
+
+The rule of thumb is to "look forward" and insert new lines with the correct feature data and a new timestamp for the feature. After fixing data in your offline stores, run materialization which pushes the features to your online store.
+
+Next, let's learn more about feature logging.

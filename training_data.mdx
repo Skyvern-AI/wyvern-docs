@@ -1,7 +1,35 @@
 ---
 title: "Retrieving Training Data"
-description: "Rich"
+description: ""
 icon: ""
 ---
 
-Coming soon...
+**Context:**
+Feast has some really useful documentation around how [point-in-time](https://docs.feast.dev/getting-started/concepts/point-in-time-joins) joins work.
+
+WyvernAPI provides the `get_historical_features` function to retrieve a number of features that correspond to a specific entity (or set of entities) at the time a user request happened. It not only covers the batch features that correspond to the entity (or entity set), which is what feast's get_historical_features does, but also covers the realt time features that are logged by Wyvern.
+
+For example, let’s say we had a user request like this:
+
+```json
+{
+    "request_id": "example_request_id".
+    "api_source": "/api/v1/product-search-ranking"
+    "candidates": [{"product_id": "p_1"}, {"product_id": "p_2"}],
+		"user": {"user_id": "u_1"},
+		"query": {"query": "chocolate"}
+}
+```
+
+The request data in a notebook may look like this, and all of this information would be supplied to `get_historical_features`:
+
+**Input Dataframe (`entities`):**
+
+| timestamp           | request            | product | brand | user | query     | was_clicked | was_ordered |
+| ------------------- | ------------------ | ------- | ----- | ---- | --------- | ----------- | ----------- |
+| 2023-07-07T22:01:00 | example_request_id | p_1     | b_1   | u_1  | chocolate | 0           | 0           |
+| 2023-07-07T22:01:00 | example_request_id | p_2     | b_1   | u_1  | chocolate | 1           | 0           |
+
+The goal of the `get_historical_features` call is to retrieve all of the features that were available to the machine learning model at the time of the above request. Specifically for this example input, it retrieves all requested `product`, `user`, `query`, and combination features, as they were at July 7th, 2023, 10:01pm
+
+Besides this input dataframe, the list of features has to be passed to the `get_historical_features` call as well.
