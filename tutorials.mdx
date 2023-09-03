@@ -27,7 +27,7 @@ This will also install the [wyvern CLI](/cli)
 Let's define the schema of the product and the schema of the ranking request:
 
 ```python pipelines/product_ranking/schemas.py
-from wyvern.entities.identifier_entities import ProductEntity
+from wyvern import ProductEntity
 
 
 class Product(ProductEntity):
@@ -85,11 +85,11 @@ In the ranking example, there are five features. For each feature, we need to de
 The entity for the search score of the product is obviously the "product". Here's the definition for this feature:
 
 ```python pipelines/product_ranking/realtime_features.py
-from wyvern.entities.feature_entities import FeatureData
-from wyvern.components.features.realtime_features_component import (
+from wyvern import (
+    FeatureData,
     RealtimeFeatureComponent,
+    WyvernFeature,
 )
-from wyvern.wyvern_typing import WyvernFeature
 
 
 class RealtimeProductFeature(RealtimeFeatureComponent[Product, Any, Any]):
@@ -118,7 +118,7 @@ class RealtimeProductFeature(RealtimeFeatureComponent[Product, Any, Any]):
 For the reset of features, they're all about similarity between the query and a product feature. This is what we call the "CompositeEntity" where the feature is the composite of two features of two different entities. Here's the definition of the composite feature group:
 
 ```python pipelines/product_ranking/realtime_features.py
-from wyvern.entities.identifier_entities import QueryEntity
+from wyvern import QueryEntity
 
 
 class RealtimeProductQueryFeature(
@@ -167,7 +167,7 @@ class RealtimeProductQueryFeature(
 Now we go back to the `pipelines/main.py` and register the realtime features with Wyvern service:
 
 ```python pipelines/main.py
-from wyvern.service import WyvernService
+from wyvern import WyvernService
 
 from pipelines.product_ranking.realtime_features import (
     RealtimeProductFeature,
@@ -188,13 +188,13 @@ import asyncio
 from functools import cached_property
 from typing import List, Set
 
-from wyvern.components.models.model_component import (
+from wyvern import (
     ModelComponent,
     ModelInput,
     ModelOutput,
+    RankingRequest,
+    CompositeIdentifier,
 )
-from wyvern.components.ranking_pipeline import RankingRequest
-from wyvern.entities.identifier import CompositeIdentifier
 
 from pipelines.product_ranking.schemas import Product
 
@@ -283,8 +283,11 @@ A Wyvern pipeline is the API route that defines the logistics of your ML applica
 Now let's define a PipelineComponent under `pipelines/product_ranking/ranking_pipeline.py`:
 
 ```python pipelines/product_ranking/ranking_pipeline.py
-from wyvern.components.models.model_component import ModelComponent
-from wyvern.components.ranking_pipeline import RankingPipeline, RankingResponse
+from wyvern import (
+    ModelComponent,
+    RankingPipeline,
+    RankingResponse,
+)
 
 from pipelines.product_ranking.models import RankingModel
 from pipelines.product_ranking.schemas import MyRankingRequest, Product
@@ -303,7 +306,7 @@ class MyRankingPipeline(RankingPipeline[Product]):
 Similar to registering realtime features, register the pipeline with the Wyvern service in `pipelines/main.py`:
 
 ```python pipelines/main.py
-from wyvern.service import WyvernService
+from wyvern import WyvernService
 
 from pipelines.product_ranking.ranking_pipeline import MyRankingPipeline
 from pipelines.product_ranking.realtime_features import (

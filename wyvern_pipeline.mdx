@@ -17,8 +17,11 @@ A Wyvern pipeline is the API route that defines the logistics of your ML applica
 Now let's define a PipelineComponent under `pipelines/product_ranking/ranking_pipeline.py`:
 
 ```python pipelines/product_ranking/ranking_pipeline.py
-from wyvern.components.models.model_component import ModelComponent
-from wyvern.components.ranking_pipeline import RankingPipeline, RankingResponse
+from wyvern import (
+    ModelComponent,
+    RankingPipeline,
+    RankingResponse,
+)
 
 from pipelines.product_ranking.models import RankingModel
 from pipelines.product_ranking.schemas import MyRankingRequest, Product
@@ -41,7 +44,7 @@ With this example, MyRankingRequest is the request schema and RankingResponse is
 Similar to registering realtime features, register the pipeline with the Wyvern service in `pipelines/main.py`:
 
 ```python pipelines/main.py
-from wyvern.service import WyvernService
+from wyvern import WyvernService
 
 from pipelines.product_ranking.ranking_pipeline import MyRankingPipeline
 from pipelines.product_ranking.realtime_features import (

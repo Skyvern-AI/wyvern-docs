@@ -13,7 +13,7 @@ A Wyvern entity (represented by the [WyvernEntity](/sdk_ref#wyvernentity-objects
 Wyvern Entity is built with pydantic model so it's really easy to work with. Let's look at the ranking product entity:
 
 ```python pipelines/product_ranking/schemas.py
-from wyvern.entities.identifier_entities import ProductEntity
+from wyvern import ProductEntity
 
 
 class Product(ProductEntity):
@@ -46,7 +46,7 @@ At the beginning of a wyvern inference request, Wyvern grabs all the entities co
 Let's look at an example with the ranking request:
 
 ```python pipelines/product_ranking/schemas.py
-from wyvern.entities.identifier_entities import ProductEntity
+from wyvern import ProductEntity
 
 
 class Product(ProductEntity):
