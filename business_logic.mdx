@@ -4,32 +4,78 @@ description: ""
 icon: "briefcase"
 ---
 
-This is its own layer as it usually needs to happen as a part of the retrieval layer or it needs to overrule something in the ranking layer. This are things that are hard to teach machine learning models.
+There are things that are hard to teach machine learning models. Business logic is the layer to to overrule something in the model.
 
 After the model returns output, Wyvern supports a business layer which allows you to customize and tune the model behavior on purpose.
 
-## Examples
+For example, one important business logic use case in ranking is boosting and burying product. Sometimes, there’s one particular product that you want to promote or demote from your ranking list. For instance, if a product violates your use of terms, wyvern offers you the ability to demote or remove the product from the result even though this product has a good ranking score returned from the model.
+Another example - if your analysis shows that occasionally showing new products in the third position really improves new brand conversion without hurting the user experience, it’s also a simple task to force a product to be in the third slot with the business logic layer.
 
-For example, one important business logic use case in ranking is boosting and burying product. Sometimes, there’s one particular product that you want to promote or demote from your ranking list. For example, if a product violates your use of terms, wyvern offers you the ability to demote or remove the product from the result even though it this product has a great ranking score returned from the model.
-For another example, if we’ve done some analysis that shows that occasionally showing new products in the third position really improves new brand conversion without hurting the user experience.. it’s a simple task to force a product to be in the third slot.
+## How It Works
 
-It’s much harder to teach a machine learning model optimized for add to cart conversion that sacrificing some add to cart conversion is acceptable.
+<Frame>
+  <img class="w-56" src="/images/business_logic.png" />
+</Frame>
 
-## BusinessLogicPipeline
+BusinessLogicPipeline is the representation of a sequeance chain of business logics. Within the BusinessLogicPipeline, you can chain many business logic components one after another.
 
-[TODO: drawing for the business logic block]
+The input to the BusinessLogicPipeline is [BusinessLogicRequest](https://docs.wyvern.ai/sdk_ref#businesslogicrequest-objects)
+
+### Build a BusinessLogicPipeline
 
 ```python
 class SearchBusinessLogicPipeline(
-    BusinessLogicPipeline[Product, ProductSearchRankingRequest],
+    BusinessLogicPipeline[Product, ProductRankingRequest],
 ):
     def __init__(self):
-        """
-        Add new business logic components here. All business logic steps are executed in the order defined here.
-        """
         super().__init__(
-            BoostUsersPledges(),
-            BoostPushNSFWItemsToTheBottom(),
+            CandleBoostingBusinessLogicComponent(),
+            AlwaysBoostWaxSealProduct(),
+            BuryBlockListProducts(),
             name="search_business_logic_pipeline",
         )
+```
+
+In this example, we're building a SearchBusinessLogicPipeline, which your marketplace might use to do the following sequentially:
+
+1. first Boost candel products
+2. then boost wax seal products
+3. finally bury products in your block lists.
+
+The business logic's target entity type is `Product`. `ProductRankingRequest` is exactly the same request of your ML pipeline.
+
+Now let's look at how a BusinessLogic component `AlwaysBoostWaxSealProduct` is built:
+
+```
+class AlwaysBoostWaxSealProduct(
+    BoostingBusinessLogicComponent[
+        Product,
+        ExampleProductSearchRankingRequest,
+    ],
+):
+    async def execute(
+        self,
+        input: BusinessLogicRequest[
+            SimpleProductEntity,
+            ExampleProductSearchRankingRequest,
+        ],
+        **kwargs,
+    ) -> List[ScoredCandidate[SimpleProductEntity]]:
+        return self.boost(input.scored_candidates, entity_keys={"7"}, boost=100)
+```
+
+### How to execute business logic
+
+```python
+business_logic_request = BusinessLogicRequest[
+    Product,
+    ProductSearchRankingRequest,
+](
+    request=input,
+    scored_candidates=scored_candidates,
+)
+
+ranked_products = await search_business_logic_pipeline.execute(
+    business_logic_request,
+)
 ```
