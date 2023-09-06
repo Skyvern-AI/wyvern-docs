@@ -17,9 +17,9 @@ Another example - if your analysis shows that occasionally showing new products 
   <img class="w-56" src="/images/business_logic.png" />
 </Frame>
 
-BusinessLogicPipeline is the representation of a sequeance chain of business logics. Within the BusinessLogicPipeline, you can chain many business logic components one after another.
+[BusinessLogicPipeline](https://docs.wyvern.ai/sdk_ref#businesslogicpipeline-objects) is the representation of a sequeance chain of business logics. Within the BusinessLogicPipeline, you can chain many [BusinessLogicComponent](https://docs.wyvern.ai/sdk_ref#businesslogiccomponent-objects) one after another. BusinessLogicPipeline steps through this series of business logic components and returns the final output
 
-The input to the BusinessLogicPipeline is [BusinessLogicRequest](https://docs.wyvern.ai/sdk_ref#businesslogicrequest-objects)
+The input to the BusinessLogicPipeline is [BusinessLogicRequest](https://docs.wyvern.ai/sdk_ref#businesslogicrequest-objects). The output of each business logic component is passed as an input to the next business logic component.
 
 ### Build a BusinessLogicPipeline
 
@@ -34,6 +34,8 @@ class SearchBusinessLogicPipeline(
             BuryBlockListProducts(),
             name="search_business_logic_pipeline",
         )
+
+search_business_logic_pipeline = SearchBusinessLogicPipeline()
 ```
 
 In this example, we're building a SearchBusinessLogicPipeline, which your marketplace might use to do the following sequentially:
@@ -64,18 +66,35 @@ class AlwaysBoostWaxSealProduct(
         return self.boost(input.scored_candidates, entity_keys={"7"}, boost=100)
 ```
 
+The input of this BusinessLogicComponent, `AlwaysBoostWaxSealProduct`, is BusinessLogicRequest, same as the input of BusinessLogicPipeline, `SearchBusinessLogicPipeline`.
+
 ### How to execute business logic
 
 ```python
+scored_candidates: List[ScoredCandidate] = [
+    ScoredCandidate(
+        entity=candidate,
+        score=(
+            model_outputs.data.get(candidate.identifier)
+        ),
+    )
+    for i, candidate in enumerate(request.candidates)
+]
+
 business_logic_request = BusinessLogicRequest[
     Product,
     ProductSearchRankingRequest,
 ](
-    request=input,
-    scored_candidates=scored_candidates,
+    request=ranking_request,
+    scored_candidates=scored_products,
 )
 
+search_business_logic_pipeline = SearchBusinessLogicPipeline()
 ranked_products = await search_business_logic_pipeline.execute(
     business_logic_request,
 )
 ```
+
+First you need to build the BusinessLogicRequest with your entity (`Product` in the example), and the request object. In this case, the request is the request of the ranking pipeline and the scored_products is the list of candidates (products) that are scored by the ranking model.
+
+Secondly, build the business logic instance of `SearchBusinessLogicPipeline` and pass the BusinessLogicRequest input to search_business_logic_pipeline.execute to execute the business logic pipeline.
