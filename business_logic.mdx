@@ -46,21 +46,21 @@ The business logic's target entity type is `Product`. `ProductRankingRequest` is
 
 Now let's look at how a BusinessLogic component `AlwaysBoostWaxSealProduct` is built:
 
-```
+```python
 class AlwaysBoostWaxSealProduct(
     BoostingBusinessLogicComponent[
         Product,
-        ExampleProductSearchRankingRequest,
+        ProductSearchRankingRequest,
     ],
 ):
     async def execute(
         self,
         input: BusinessLogicRequest[
-            SimpleProductEntity,
-            ExampleProductSearchRankingRequest,
+            Product,
+            ProductSearchRankingRequest,
         ],
         **kwargs,
-    ) -> List[ScoredCandidate[SimpleProductEntity]]:
+    ) -> List[ScoredCandidate[Product]]:
         return self.boost(input.scored_candidates, entity_keys={"7"}, boost=100)
 ```
 
