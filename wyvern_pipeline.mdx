@@ -6,11 +6,13 @@ icon: "pipe-section"
 
 ## Set Up Pipeline
 
-A Wyvern pipeline is the API route that defines the logistics of your ML application pipeline and it defines the API endpoint of yours. There are three inputs:
+A Wyvern pipeline is the API route that defines the logistics of your ML application pipeline and it defines the API endpoint of yours. There are a couple of inputs:
 
-- request schema: the MyRankingRequest we defined in pipelines/product_ranking/schemas.py
-- response schema: the default RankingResponse
-- the machine learning model: the RankingModel we defined in pipelines/product_ranking/models.py
+- REQUEST_SCHEMA_CLASS: the class of the request schema. This is used to validate the request data.
+- RESPONSE_SCHEMA_CLASS: the class of the response schema. This is used to validate the response data.
+- PATH: the path of the API. This is used in the API routing.
+- (Optional) API_VERSION: the version of the API. This is used in the API routing. The default value is "v1". As a result, the final url of your pipeline will be `/api/v1/{your PATH}`
+- (Optional) API_NAME: the name of the API. This is used in the API routing. If not provided, the name of the pipeline component class will be used by default.
 
 Now let's define a PipelineComponent under `pipelines/product_ranking/ranking_pipeline.py`:
 
@@ -25,10 +27,14 @@ from pipelines.product_ranking.schemas import MyRankingRequest, Product
 class MyRankingPipeline(RankingPipeline[Product]):
     REQUEST_SCHEMA_CLASS = MyRankingRequest
     RESPONSE_SCHEMA_CLASS = RankingResponse
+    PATH = "/my-ranking"
+    API_VERSION = "/v1"
 
     def get_model(self) -> ModelComponent:
         return RankingModel()
 ```
+
+With this example, MyRankingRequest is the request schema and RankingResponse is the response schema. And the API url is `/api/v1/my-ranking`
 
 ## Register Pipelines
 
