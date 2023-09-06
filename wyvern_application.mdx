@@ -10,33 +10,6 @@ Wyvern is a machine learning platform that empowers data scientists to independe
 
 Wyvern's application is built to make it easy to serve your ML application to your production. It is built on top of [fastapi](https://fastapi.tiangolo.com/) with lots of built-in Wyvern functionalities. It is a web framework that holds all the Wyvern ML pipelines and serves them through API.
 
-## Define ML Pipeline
-
-Let's think about the product ranking problem in a marketplace. Your marketplace has thousands or even millions of products and you're using elasticsearch or Algolia to do basic search. Now you want to build a ranking pipeline with Wyvern to superpower power your search with an additional ranking model.
-
-Assuming your search (elasticsearch and algolia are pretty common search solutions nowadays) returns thousands of products. You would like to use your ranking model to guess what are the most relevant products related to the query and to what this particular user is looking for.
-
-We're going to build a linear ranking model considering five factors:
-
-- the search score of the product
-- similarity between the query and the category of the product
-- similarity between the query and the brand of the product
-- similarity between the query and the title of the product
-- similarity between the query and the description of the product
-
-Here's the formula of the model:
-
-```shell
-model_score =
-    2 * search_score
-    + 10 * query_category_similarity
-    + 20 * query_brand_similarity
-    + 22 * query_title_similarity
-    + 13 * query_description_similarity
-```
-
-What the pipeline does is to get all the features for each product and pass them to the model. As a result, the model returns the score of every product and the pipeline returns the list of ranked products.
-
 ## How to run
 
 Let's see how to build the wyvern app:
