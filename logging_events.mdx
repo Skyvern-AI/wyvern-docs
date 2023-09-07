@@ -16,7 +16,7 @@ Wyvern has a standardized way of logging events that’s useful either for debug
 
 ## Integration
 
-To enable Wyvern event logging, set the `EVENT_LOGGING_ENABLED=true` in your environment.
+By default, event logging is always enabled. This might cause error if you have not set up your event logging integration. To disable Wyvern event logging, set the `EVENT_LOGGING_ENABLED=false` in your environment.
 
 ### Raw Logging Integration
 
@@ -36,4 +36,4 @@ Steps to set up kinesis with Wyvern:
 
 #### Snowflake
 
-Use [snowpipe auto ingest](https://docs.snowflake.com/en/user-guide/data-load-snowpipe-auto-s3) to ingest wyvern's events to your data warehouse.
+Use [snowpipe](https://docs.snowflake.com/en/user-guide/data-load-snowpipe-auto-s3) to auto ingest wyvern's events to your data warehouse.

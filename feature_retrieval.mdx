@@ -8,17 +8,71 @@ One main design goal of Wyvern is to define a standard way of how machine learni
 
 ## Wyvern Entity
 
-A Wyvern entity (represented by the [WyvernEntity](/sdk_ref#wyvernentity-objects) in code) is the basic unit of data structure that represents a critical object in your ML pipline that could be indexed and queried. It's like the database table concept. For example in the case of product ranking, "product", "user", "query" or even the "request" are all important entities.
+A Wyvern entity (represented by the [WyvernEntity](/sdk_ref#wyvernentity-objects) in code) is the basic unit of data structure that represents a critical object in your pipline. It's like the database table concept. For example in the case of product ranking, "product", "user", "query" or even the "request" are all important entities.
 
-## Wyvern Index and Data Hydration
+Wyvern Entity is built with pydantic model so it's really easy to work with. Let's look at the ranking product entity:
 
-Wyvern current integrates redis as it's index, where the [Near Realtime or Streaming Features](https://huyenchip.com/2023/01/08/self-serve-feature-platforms.html#batch-vs-real-time-vs-nrt-features) of an entity are stored. The concept is quite similar to [the elasticsearch index](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
+```python pipelines/product_ranking/schemas.py
+from wyvern import ProductEntity
 
-At the beginning of a wyvern inference request, Wyvern grabs all the entities contained in the request schema, fetches all the data from Wyvern Index if exists and "hydrate" all the data into the entity object. Therefore, even if your API request is only sending the primary key of the entity, the pipeline code will still have full access to all the indexed data attributes of the entity. This is the what is called the "Data Hydration" phase.
 
-There are two big reasons for why Wyvern Index is designed:
+class Product(ProductEntity):
+    brand: str | None = None
+    category: str | None = None
+    categories: list[str] = []
+    title: str | None = None
+    description: str | None = None
+    price: float | None = None
+    number_in_stock: int | None = None
+    search_score: float | None = None
+```
 
-1. Less hassle. No need to think of fetching, parsing and passing along the entity metadata to the ML pipeline. Wyvern handles it.
-2. Less overhead and . Imaging you have to send all your product catelog data for hundreds of products through network, it's a lot. Only pass the entity ids along.
+Wyvern provides a predefined [ProductEntity](/todo_somewhere), which is a child class of WyvernEntity and has `product_id` as it's main identifier.
+
+## Wyvern Index
+
+Wyvern Index (current only integrates with Redis) is where you store [Near Realtime or Streaming Features](https://huyenchip.com/2023/01/08/self-serve-feature-platforms.html#batch-vs-real-time-vs-nrt-features) of entity data. The concept is quite similar to [the elasticsearch index](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
+
+Wyvern Application has the following indexation APIs:
+
+- Upload Entities (`POST /api/v1/entities/upload`): API to create or update entities. No partial update of an entity.In another word, if an entity is already indexed (already exists) in Wyvern Index, it will be completely replaced by this new entity data with the same entity id.
+- Get Entities (`POST /api/v1/entities/get`): API to read the entities from Wyvern Index.
+- Delete Entities (`POST /api/entity/v1/entities/delete`): API to delete entities in Wyvern Index.
+
+## Index Retrieval and Entity Hydration
+
+At the beginning of a wyvern inference request, Wyvern grabs all the entities contained in the request schema, fetches all entity data from Wyvern Index if the entity exists and "hydrate" all the data into the entity object. Therefore, even if your API request is only sending the primary key of the entity, the pipeline code will still have full access to all the indexed data attributes of the entity. This is the what the "Entity Hydration" phase.
+
+Let's look at an example with the ranking request:
+
+```python pipelines/product_ranking/schemas.py
+from wyvern import ProductEntity
+
+
+class Product(ProductEntity):
+    brand: str | None = None
+    category: str | None = None
+    categories: list[str] = []
+    title: str | None = None
+    description: str | None = None
+    price: float | None = None
+    number_in_stock: int | None = None
+    search_score: float | None = None
+
+
+class MyRankingRequest(RankingRequest[Product]):
+    candidates: list[Product]
+```
+
+Let's assume Wyvern receives a request object with a list of product candidates that only has `product_id`, Wyvern will fetch all the product entities that are found in Wyvern Index and hydrate data into the Product entity. As a result, `request.candidates[0].brand` will be available within your pipeline code.
+
+## Batch Feature Retrieval
+
+Wyvern automates the retrieval of all the features required by your pipeline from feature store and store the features in memory per request. Inside every wyvern component, you can do `self.get_feature(identifier, "feature_name")` to get the feature value.
+
+## Reasoning Behind The Design of Wyvern's Feature Retrieval
+
+1. Less hassle. By using Wyvern, you don't have to think of fetching, parsing and passing along the entity metadata within the ML pipeline.
+2. Less network overhead. Imaging you have to send all your product catelog data for hundreds of products through network, it's a lot. With Wyvern, only pass along the entity IDs.
 
 Next, let's see how realtime features are defined in Wyvern.

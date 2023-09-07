@@ -48,7 +48,7 @@ What the pipeline does is to get all the features for each product and pass them
 To start building a Wyvern Pipeline, we should define the schema first. In the ranking case, we start by defining the product and the ranking request schemas:
 
 ```python pipelines/product_ranking/schemas.py
-from wyvern.entities.identifier_entities import ProductEntity
+from wyvern import ProductEntity
 
 
 class Product(ProductEntity):

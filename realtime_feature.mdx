@@ -27,11 +27,7 @@ In the ranking example, there are five features. For each feature, we need to de
 The entity for the search score of the product is obviously the "product". Here's the definition for this feature:
 
 ```python pipelines/product_ranking/realtime_features.py
-from wyvern.entities.feature_entities import FeatureData
-from wyvern.components.features.realtime_features_component import (
-    RealtimeFeatureComponent,
-)
-from wyvern.wyvern_typing import WyvernFeature
+from wyvern import FeatureData, RealtimeFeatureComponent, WyvernFeature
 
 
 class RealtimeProductFeature(RealtimeFeatureComponent[Product, Any, Any]):
@@ -57,10 +53,10 @@ class RealtimeProductFeature(RealtimeFeatureComponent[Product, Any, Any]):
         )
 ```
 
-For the reset of features, they're all about similarity between the query and a product feature. This is what we call the "CompositeEntity" where the feature is the composite of two features of two different entities. Here's the definition of the composite feature group:
+For the remaining features, they're all about similarity between the query and a product feature. This is what we call the "CompositeEntity" where the feature is the composite of two features of two different entities. Here's the definition of the composite feature group:
 
 ```python pipelines/product_ranking/realtime_features.py
-from wyvern.entities.identifier_entities import QueryEntity
+from wyvern import FeatureData, RealtimeFeatureComponent, QueryEntity, WyvernFeature
 
 
 class RealtimeProductQueryFeature(
@@ -109,7 +105,7 @@ class RealtimeProductQueryFeature(
 Now we go back to the `pipelines/main.py` and register the realtime features with Wyvern service:
 
 ```python pipelines/main.py
-from wyvern.service import WyvernService
+from wyvern import WyvernService
 
 from pipelines.product_ranking.realtime_features import (
     RealtimeProductFeature,
