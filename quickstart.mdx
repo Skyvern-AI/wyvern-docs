@@ -117,7 +117,7 @@ curl --location 'http://0.0.0.0:5001/api/v1/ranking' \
 
 This request sends 24 products retrieved from search to Wyvern and ask Wyvern to return the 8 products (in descending order) to show on the first user page (`"user_page": 0`).
 
-You should see a response like the following.
+You should see a response like the following with the products being ordered descendingly by their ranking score.
 
 ```json
 {
