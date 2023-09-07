@@ -70,7 +70,7 @@ wyvern redis
 wyvern run
 ```
 
-Wyvern spins up a fastapi service with the default ranking API `/api/v1/ranking`. Refer to http://0.0.0.0:5001/redoc#operation/MyRankingPipeline_api_v1_ranking_post for the ranking schema.
+This spins up a service at http://0.0.0.0:5001 and the default ranking API schema could be found at http://0.0.0.0:5001/redoc#operation/MyRankingPipeline_api_v1_ranking_post.
 
 ### Test ranking request
 
@@ -115,7 +115,9 @@ curl --location 'http://0.0.0.0:5001/api/v1/ranking' \
 }'
 ```
 
-You should see a response like this. The ranking API returns the 8 products/candidates ranked in descending order by their ranking model score.
+This request sends 24 products retrieved from search to Wyvern and ask Wyvern to return the 8 products (in descending order) to show on the first user page (`"user_page": 0`).
+
+You should see a response like the following.
 
 ```json
 {
