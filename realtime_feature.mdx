@@ -16,15 +16,31 @@ Real-time features can be used to generate features that are easier to compute a
 
 There is [a great article from Chip Huyen about real-time machine learning](https://huyenchip.com/2023/01/08/self-serve-feature-platforms.html#batch-vs-real-time-vs-nrt-features)
 
-## Wyvern RealtimeFeatureComponent
+## Define Features - RealtimeFeatureComponent
+
+[RealtimeFeatureComponent](https://docs.wyvern.ai/sdk_ref#realtimefeaturecomponent-objects) represents a group of features with the same scope of entity/entities and request.
 
 For a ML feature, there is usually an entity or a composite of entities that the feature is associated to.
 
-Wyvern has the RealtimeFeatureComponent which allows you to inherit from and define the your feature group. It has three potential inputs: the primary entity, the secondary entity and the request entity.
+Wyvern's RealtimeFeatureComponent supports single entity and composite entities (with the primary entity and secondary entity). Wyvern also supports the request scope, where you can define the scope of your RealtimeFeatureComponent. For example:
 
-In the ranking example, there are five features. For each feature, we need to define the entity of the feature.
+```
+class RealtimeProductFeature(RealtimeFeatureComponent[Product, Any, Any])
+```
 
-The entity for the search score of the product is obviously the "product". Here's the definition for this feature:
+This line defines a group of features under `RealtimeProductFeature`. It inherits the RealtimeFeatureComponent with 3 types indicating the entity and the request scope. For this one, there's a group of features for the primary entity, `Product`, as the first type hint to the `RealtimeFeatureComponent`. There is no secondary entity, as the second type hint is `Any`. In another word, it's not a composite entity. These features could be applied under any request condition, as the third type hint is `Any`.
+
+Now let's come back to the ranking example. Let's define five features:
+
+- search_score
+- query_category_similarity
+- query_brand_similarity
+- query_title_similarity
+- query_description_similarity
+
+For each feature, we need to define the entity of the feature. For features that share the same entity, they could also share the same realtime feature component.
+
+The entity for the search score of the candidates is obviously the "product". Here's the definition for the first feature `search_score`:
 
 ```python pipelines/product_ranking/realtime_features.py
 from wyvern import FeatureData, RealtimeFeatureComponent, WyvernFeature
@@ -53,7 +69,7 @@ class RealtimeProductFeature(RealtimeFeatureComponent[Product, Any, Any]):
         )
 ```
 
-For the remaining features, they're all about similarity between the query and a product feature. This is what we call the "CompositeEntity" where the feature is the composite of two features of two different entities. Here's the definition of the composite feature group:
+For the remaining features, they're all about similarity between the query and a product feature. This is what we call the "CompositeEntity" where the feature is the composite of two different entities, which Product + QueryEntity. Here's the definition of this composite feature group:
 
 ```python pipelines/product_ranking/realtime_features.py
 from wyvern import FeatureData, RealtimeFeatureComponent, QueryEntity, WyvernFeature
@@ -65,7 +81,6 @@ class RealtimeProductQueryFeature(
     def __init__(self):
         super().__init__(
             output_feature_names={
-                "search_score",
                 "query_category_similarity",
                 "query_brand_similarity",
                 "query_title_similarity",
