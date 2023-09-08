@@ -20,8 +20,8 @@
   },
   "topbarLinks": [
     {
-      "name": "Contact Us",
-      "url": "mailto:support@wyvern.ai"
+      "name": "Join Slack",
+      "url": "https://join.slack.com/t/wyvernai/shared_invite/zt-22nu62m6f-duK46NyhIINsdjKJct1hqg"
     },
     {
       "name": "Github",
