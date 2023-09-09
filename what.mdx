@@ -8,7 +8,7 @@ Wyvern is a real-time machine learning platform for marketplaces, one that grows
 
 Wyvern empowers data scientists to independently build and deploy production-grade machine learning pipelines for the e-commerce industry, reducing the engineering involvement in the entire process.
 
-Wyvern starts with solving the Product Ranking use case, as it’s the ML model that brings the biggest impact to a growing marketplace and is usually the most hairy problem that’s hard to solve. Many places builds in-house ML platform to solve the product ranking in the first place.
+Wyvern starts with solving the Product Ranking use case, as it’s the ML model that brings the biggest impact to a growing marketplace as well as the most challenging problem. Most marketplaces builds in-house ML platform to solve the product ranking in the first place.
 
 ## Wyvern ML Platform Architecture
 
@@ -25,7 +25,7 @@ Let's see what different colors mean in the architecture graph:
 
 ### The Red Areas: User Data
 
-Wyvern indexes your entity catalogs for fast real-time ML inference and connects to your data warehouse.
+Wyvern indexes your product catalogs for fast real-time ML inference and connects to your data warehouse.
 
 ### The Organge Areas: Services
 
@@ -50,11 +50,3 @@ Wyvern connects to your feature flag and A/B testing tools
 ### The Blue Areas: Wyvern Pipeline
 
 We have more [documents about Wyvern Pipeline](wyvern_application)
-
-## Wyvern Search & Discovery Architecture
-
-Using Wyvern’s ML Architecture, it’s easy to extend the basic architecture into a search & discovery architecture like this:
-
-<Frame>
-  <img class="w-full h-full" src="/images/ranking_architecture.png" />
-</Frame>
