@@ -4,11 +4,17 @@ description: ""
 icon: "dragon"
 ---
 
-Wyvern is a real-time machine learning platform for marketplaces, one that grows with the business.
+Wyvern is a real-time machine learning platform for marketplaces.
 
-Wyvern empowers data scientists to independently build and deploy production-grade machine learning pipelines for the e-commerce industry, reducing the engineering involvement in the entire process.
+With Wyvern, ML pipelines are modularized in a way to empower data scientists to independently build and deploy production-grade machine learning pipelines for marketplaces. As a result, Wyvern sets up the standards for the following that could be followed by every every ML pipeline building process:
 
-Wyvern starts with solving the Product Ranking use case, as it’s the ML model that brings the biggest impact to a growing marketplace as well as the most challenging problem. Most marketplaces builds in-house ML platform to solve the product ranking in the first place.
+- Setting up features for ML models
+- Logging events
+- Productionizing your ML application
+- Monitoring your ML application
+- Generating training data set for model training
+
+Wyvern specializes bringing use cases like recommendations and rankings in-house fast.
 
 ## Wyvern ML Platform Architecture
 
@@ -16,7 +22,11 @@ Wyvern starts with solving the Product Ranking use case, as it’s the ML model 
   <img class="w-full h-full" src="/images/wyvern_ml_architecture.png" />
 </Frame>
 
-Wyvern is the orchestrator of your marketplace ML pipeline.
+Wyvern is your opinionated framework to deploy ML pipelines within marketplaces.
 
-- connects your feature stores, model service and data warehouse
-- provides feature logging in a consistent format as well as observability into your production ML application
+- Connects to your retrieval engine (ie Elasticsearch, Algolia)
+- Connects to your feature store (ie Feast)
+- Connects to your model service
+- Allows you to define custom business logic
+- Logs all the events in your ML pipeline, including real-time feature logging, model logging, business logic logging, impression logging, as well logging your own custom events.
+- Opentelemetry support (which is coming soon)
