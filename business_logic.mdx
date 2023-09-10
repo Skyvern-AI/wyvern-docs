@@ -4,12 +4,11 @@ description: ""
 icon: "briefcase"
 ---
 
-There are things that are hard to teach machine learning models. Business logic is the layer to to overrule something in the model.
+Sometimes you want to override what the model spits out for either business initiatives or some other reasons. Wyvern's business logic is the layer to to overrule something in the model. Business logic layer allows you to further tune the results based on a deliberate set of heuristics
 
-After the model returns output, Wyvern supports a business layer which allows you to customize and tune the model behavior on purpose.
+For example, one important business logic use case in ranking is boosting and burying product. Sometimes, there’s one particular product that you want to promote or demote from your ranking list. For instance, if a product contains NSFW ([Not Safe For Work](https://en.wikipedia.org/wiki/Not_safe_for_work)) content, wyvern offers you the ability to demote or remove the product from the result even though this product has a good ranking score returned from the model.
 
-For example, one important business logic use case in ranking is boosting and burying product. Sometimes, there’s one particular product that you want to promote or demote from your ranking list. For instance, if a product violates your use of terms, wyvern offers you the ability to demote or remove the product from the result even though this product has a good ranking score returned from the model.
-Another example - if your analysis shows that occasionally showing new products in the third position really improves new brand conversion without hurting the user experience, it’s also a simple task to force a product to be in the third slot with the business logic layer.
+Another example - if your analysis shows that having more different brands showing up in the same page would increase the conversion - the diversity of brands matters. On the other hand, having products from the same brand next to each other makes conversion worse. In a case like this to improve the diversity of the product brands, you could easily implement business logic that reorder your page so that products from the same brand are not adjacent to each other.
 
 ## How It Works
 
@@ -40,9 +39,9 @@ search_business_logic_pipeline = SearchBusinessLogicPipeline()
 
 In this example, we're building a SearchBusinessLogicPipeline, which your marketplace might use to do the following sequentially:
 
-1. first Boost candel products
+1. first Boost candle products
 2. then boost wax seal products
-3. finally bury products in your block lists.
+3. finally bury products in your blocklist.
 
 The business logic's target entity type is `Product`. `ProductRankingRequest` is exactly the same request of your ML pipeline.
 
@@ -67,34 +66,3 @@ class AlwaysBoostWaxSealProduct(
 ```
 
 The input of this BusinessLogicComponent, `AlwaysBoostWaxSealProduct`, is BusinessLogicRequest, same as the input of BusinessLogicPipeline, `SearchBusinessLogicPipeline`.
-
-### How to execute business logic
-
-```python
-scored_candidates: List[ScoredCandidate] = [
-    ScoredCandidate(
-        entity=candidate,
-        score=(
-            model_outputs.data.get(candidate.identifier)
-        ),
-    )
-    for i, candidate in enumerate(request.candidates)
-]
-
-business_logic_request = BusinessLogicRequest[
-    Product,
-    ProductSearchRankingRequest,
-](
-    request=ranking_request,
-    scored_candidates=scored_products,
-)
-
-search_business_logic_pipeline = SearchBusinessLogicPipeline()
-ranked_products = await search_business_logic_pipeline.execute(
-    business_logic_request,
-)
-```
-
-First you need to build the BusinessLogicRequest with your entity (`Product` in the example), and the request object. In this case, the request is the request of the ranking pipeline and the scored_products is the list of candidates (products) that are scored by the ranking model.
-
-Secondly, build the business logic instance of `SearchBusinessLogicPipeline` and pass the BusinessLogicRequest input to search_business_logic_pipeline.execute to execute the business logic pipeline.
