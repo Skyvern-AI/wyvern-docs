@@ -13,12 +13,53 @@ Wyvern has a standardized way of logging events that’s useful either for debug
 | Model event          | Wyvern records the model scores for each candidate. This includes the actual predictions for each model that’s evaluated, including the ensembling of multiple models | 1. The entity id<br />2. The model source<br />3. The model generated score                                                                                                                               |
 | Business logic event | Wyvern records each candidate which had business logic applied to it. whether the ML model results was modified or not and what was change was)                       | 1. The entity id (ie product_id)<br />2. The business logic application source<br />3. The original candidate score<br />4. The adjusted candidate score                                                  |
 | Impression event     | Wyvern records the final scores for each candidate, after it has gone through Model Scoring and Business logic pipelines                                              | 1. Impression id<br />2. Impression type<br />3. Impression order (this will be 0 for non-ranking situations)<br />4. Impression score                                                                    |
+| Custom event         | Wyvern records your custom event data. See [Custom Logging](/logging_events#custom-logging) to see how to build a custom event log                                    | 1. The custom entity id<br />2. The custom entity identifier type<br />3. custom data                                                                                                                     |
+
+## Custom logging
+
+Here’s an example of how to log custom event data within Wyvern:
+
+```python
+from wyvern.event_logging import event_logger
+from wyvern.components.events.events import EntityEventData
+
+# define your custom event data
+class EmailEventData(EntityEventData):
+    owner_name: str
+    title: str
+
+# log the event
+event_logger.log_custom_events(
+    events=[
+        EmailEventData(
+            entity_identifier="email_addr@gmail.com",
+            entity_identifier_type="email",
+            owner_name="Jim",
+            title="Check-in",
+            ),
+        EmailEventData(
+            entity_identifier="email_addr_2@gmail.com",
+            entity_identifier_type="email",
+            owner_name="Shu",
+            title="Hello World",
+        ),
+    ]
+)
+```
+
+1. import the `EntityEventData` and build your custom entity event data like the `EmailEventData` in this exampl
+
+   e
+
+2. import `event_logger` from `wyvern.components.events.events` and call `event_logger.log_custom_events` to log your custom event
+
+   s
 
 ## Integration
 
 By default, event logging is always enabled. This might cause error if you have not set up your event logging integration. To disable Wyvern event logging, set the `EVENT_LOGGING_ENABLED=false` in your environment.
 
-### Raw Logging Integration
+### Raw Event Logging Integration
 
 Currently wyvern is only integrated with AWS kinesis, which sends all the events to your destination.
 
@@ -37,3 +78,7 @@ Steps to set up kinesis with Wyvern:
 #### Snowflake
 
 Use [snowpipe](https://docs.snowflake.com/en/user-guide/data-load-snowpipe-auto-s3) to auto ingest wyvern's events to your data warehouse.
+
+### Event Transformation (Coming soon)
+
+Wyvern provides a built-in transformer to transform the raw event logs into event tables show in this page.

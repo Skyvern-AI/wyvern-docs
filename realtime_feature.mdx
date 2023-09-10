@@ -10,11 +10,12 @@ Real-time features can be used to generate features that are easier to compute a
 
 1. Request metadata (user device, user location, etc) — you have 100% accuracy online
 2. Embedding similarity (user x product) — Storage complexity is significantly lower if you compute this online
-3. “Facts” about entities (ie product name) — Eliminate the risk of stale (recently uploaded) data
+3. “Facts” about entities (ie product inventory count) — Eliminate the risk of stale (recently uploaded) data
 4. Real-time Embeddings — Capture the long-tail of queries as embedding the query in real-time gives 100% coverage
 5. Session Embeddings — Capture user interactions on the website ahead of this request and personalize content based on that
+6. External API calls — Some real-time features come from another API request
 
-There is [a great article from Chip Huyen about real-time machine learning](https://huyenchip.com/2023/01/08/self-serve-feature-platforms.html#batch-vs-real-time-vs-nrt-features)
+If you’d like to learn more, Chip has a fantastic [article](https://huyenchip.com/2023/01/08/self-serve-feature-platforms.html#batch-vs-real-time-vs-nrt-features) describing real-time ML.
 
 ## Define Features - RealtimeFeatureComponent
 
