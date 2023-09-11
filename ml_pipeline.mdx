@@ -4,13 +4,14 @@ description: ""
 icon: "pipe-section"
 ---
 
-An ML pipelien defines the end to end flow of the model inference process. Wyvern's ML pipeline is comprised of:
+An ML pipeline defines the end to end flow of the model inference process. Wyvern's ML pipeline is comprised of:
 
-- feature retrieval
-- realtime feature generation
-- model inference
-- business logic
-- event logging
+- Retrieval (Mostly for Search & Discovery use cases like recommendations and ranking)
+- Offline feature retrieval
+- Realtime feature generation
+- Model inference
+- Business logic
+- Event logging
 
 The pipeline orchestrates all the feature data going into the model, data getting out of the model, and logging all the data to a standard format.
 
@@ -18,17 +19,22 @@ Let's see how to define and set up a Machine Learning Pipeline with Wyvern
 
 ## Define ML Pipeline
 
-First, let's think about the product ranking problem in a marketplace. Your marketplace has thousands or even millions of products and you're using elasticsearch or Algolia to do basic search. Now you want to build a ranking pipeline with Wyvern to superpower power your search with an additional ranking model.
+First, let's think about the product ranking problem in a marketplace. Your marketplace has thousands or even millions of products and you're using Elasticsearch or Algolia to do basic search. Now you want to build a ranking pipeline to add personalization.
 
-Assuming your search (elasticsearch and algolia are pretty common search solutions nowadays) returns thousands of products. You would like to use your ranking model to guess what are the most relevant products related to the query and to what this particular user is looking for.
+Assuming your search returns thousands of products. You would use your ranking model to factor in more than just text relevance: Image relevance, Newness of products, popularity of products, user personalization, session personalization.
 
-We're going to build a linear ranking model considering five factors:
+We're going to build a linear ranking model considering these factors:
 
 - the search score of the product
 - similarity between the query and the category of the product
 - similarity between the query and the brand of the product
 - similarity between the query and the title of the product
 - similarity between the query and the description of the product
+- relevance between the query and the image
+- newness of the product
+- popularity of the product
+- relevance between user's purchase history and the product
+- relevance between session's search history and the product
 
 Here's the formula of the model:
 
@@ -39,13 +45,18 @@ model_score =
     + 20 * query_brand_similarity
     + 22 * query_title_similarity
     + 13 * query_description_similarity
+    + 15 * query_image_relevance
+    + 4 * product_newness
+    + 18 * product_popularity
+    + 26 * product_purchase_history_relevance
+    + 30 * product_session_search_relevance
 ```
 
 What the pipeline does is to get all the features for each product and pass them to the model. As a result, the model returns the score of every product and the pipeline returns the list of ranked products.
 
-## Define Schemas
+### Requests
 
-To start building a Wyvern Pipeline, we should define the schema first. In the ranking case, we start by defining the product and the ranking request schemas:
+To start building a Wyvern Pipeline, we should define the request schema first. In the ranking case, we start by defining the product and the ranking request schemas:
 
 ```python pipelines/product_ranking/schemas.py
 from wyvern import ProductEntity

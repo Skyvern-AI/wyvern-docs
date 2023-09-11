@@ -46,6 +46,7 @@
       "pages": [
         "wyvern_application",
         "ml_pipeline",
+        "data_hydration",
         "feature_retrieval",
         "realtime_feature",
         "model_service",

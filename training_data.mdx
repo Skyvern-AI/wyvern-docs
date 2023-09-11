@@ -1,11 +1,13 @@
 ---
-title: "Retrieving Training Data"
+title: "Model Training"
 description: ""
 icon: ""
 ---
 
 **Context:**
 Feast has some really useful documentation around how [point-in-time](https://docs.feast.dev/getting-started/concepts/point-in-time-joins) joins work.
+
+For model training, you want to get all the offline features and real-time features that are used in production.
 
 WyvernAPI provides the `get_historical_features` function to retrieve a number of features that correspond to a specific entity (or set of entities) at the time a user request happened. It not only covers the batch features that correspond to the entity (or entity set), which is what feast's get_historical_features does, but also covers the realt time features that are logged by Wyvern.
 
