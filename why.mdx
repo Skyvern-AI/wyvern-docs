@@ -8,11 +8,50 @@ icon: "face-thinking"
 
 Every marketplace encounters common challenges that can greatly benefit from the application of Machine Learning (ML) solutions. These challenges encompass following areas
 
-- product ranking
-- recommendations
-- fraud detection
-- shipping cost estimation
-- credit scoring
+### Search & Discovery
+
+In marketplaces, especially those that sell products, the core product is built help the buyer find the right products that they're looking for, whether it's through a recommendation email, the recommended products or carousels on the home page or through search results. [TODO: write more with examples]
+
+### Fraud Detection
+
+There are so many types of marketplace fruad:
+
+- fake profile fraud
+- fake product fraud
+- false advertising fraud
+- fake buyer fraud
+- fake seller fraud
+- payment fraud
+- account takeover fraud
+- ...
+- and so many more
+
+The total cost of ecommerce fraud was expected to be \$48 billion globally this year according to [ekata](https://ekata.com/blog/ecommerce-fraud-trends-and-statistics-merchants-need-to-know-in-2023).
+
+Almost every growing marketplace will face fraudulent action here and there and being able to detect and prevent fraudulent actions would prevent them from losing millions of dallars every year.
+
+### Shipping Cost Estimation
+
+Shipping is a key part of the success of a marketplace's or for any brand's success in your marketplace. [48% of the cart abandonments are due to extra costs like shipping and taxes](https://www.printful.com/blog/ecommerce-shipping-pricing).
+
+Marketplaces have a strong will to improve their shipping cost strategy to improve their revenue. Each marketplace has its unique shipping cost insights for which would almost be certain to benefit from customly trained machine learning models. [TODO: write an example]
+
+### Credit Scoring
+
+Lots of marketplaces would provides NET 30/60/90 terms as well as granting credit limit to their users. For example, [Faire has net 60 terms](https://www.faire.com/net-terms), meaning that purchases mad with net 60 terms won't be charged until 60 days later after the order.
+
+In order to provide these terms to users in a marketplace, the marketplace usually has to do background checking to collect information before deciding to assign the terms to you, just like what banks does to approve or deny your credit card. Moreover, they also have to decide how much credit limit the user could get based on the information. Assigning too much credit limit might empower users to purchase more but could also jeopardize the business as there's a bigger risk when crediting more usage limit. Usually this process starts with manual review but it won't scale out soon once the marketplace grows fast.
+
+Machine learning model comes into play to save a lot of cost here for sure. [TODO: give examples]
+
+## Sharing The Cross Learnings
+
+Lots of machine learning models for these use cases use same data or same learning. Some examples:
+
+1. Product ranking uses session tracking to personalize results. This is also one of the factors when determining transaction fraud
+2. Credit scoring is calculated based on credit score, credit limit in credit cards, a price propensity model. This is also very useful in product ranking – specifically if you’re deciding whether to show cheap or expensive handbags
+
+With Wyvern, you would be able to leverage the shared data and share learning across multiple machine learning cases. These shared learning will furthure more generate feedbacks for the model that depends on them to keep improving model performance.
 
 ## ML Platform Is Hard To Build
 
