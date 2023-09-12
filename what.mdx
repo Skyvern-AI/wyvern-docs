@@ -6,14 +6,6 @@ icon: "dragon"
 
 Wyvern is a real-time machine learning platform for marketplaces.
 
-With Wyvern, ML pipelines are modularized in a way to empower data scientists to independently build and deploy production-grade machine learning pipelines for marketplaces. As a result, Wyvern sets up the standards for the following that could be followed by every ML pipeline building process:
-
-- Setting up features for ML models
-- Logging events
-- Productionizing your ML application
-- Monitoring your ML application
-- Generating training data set for model training
-
 Wyvern specializes bringing use cases like recommendations and rankings in-house fast.
 
 ## Wyvern ML Platform Architecture
@@ -22,11 +14,15 @@ Wyvern specializes bringing use cases like recommendations and rankings in-house
   <img class="w-full h-full" src="/images/wyvern_ml_architecture.png" />
 </Frame>
 
-Wyvern is your opinionated framework to deploy ML pipelines within marketplaces.
+Wyvern is an opinionated framework to develop ML pipelines within marketplaces. Here's a list of features it enables:
 
-- Connects to your retrieval engine (ie Elasticsearch, Algolia)
-- Connects to your feature store (ie Feast)
-- Connects to your model service
-- Allows you to define custom business logic
-- Logs all the events in your ML pipeline, including real-time feature logging, model logging, business logic logging, impression logging, as well logging your own custom events.
+- Making it easy to define features for your ML models
+- Connecting to your retrieval engine (ie Elasticsearch, Algolia)
+- Connecting to your feature store (ie Feast)
+- Connecting to your model service
+- Chaining multiple models
+- Implementing custom business logic on top of the model output
+- Productionizing your ML application
+- Logging every important event in your ML pipeline, including real-time feature logging, model logging, business logic logging, impression logging, as well logging your own custom events.
+- Generating training data set for model training
 - Opentelemetry support (which is coming soon)
