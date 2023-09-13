@@ -6,17 +6,17 @@ icon: "gear"
 
 Wyvern's configuration setting integrates with your environment variables or [.env](https://www.ibm.com/docs/en/aix/7.2?topic=files-env-file) file automatically.
 
-## Configure Environment Variables
+Here's the list of default Configurations from wyvern's [Settings class](https://docs.wyvern.ai/sdk_ref#settings-objects).
 
-Here's the list of default variables from the [settings reference](https://docs.wyvern.ai/sdk_ref#settings-objects).
+There are two ways to configure Wyvern's settings:
 
-You can set your environment variables by exporting them directly like this:
+1. Set your environment variables by exporting them directly to your environment:
 
 ```
 export REDIS_HOST=localhost
 ```
 
-or setting them up in a `.env` file:
+2. Setting them up in a `.env` file:
 
 ```
 REDIS_HOST=localhost
