@@ -48,7 +48,6 @@
         "ml_pipeline",
         "data_hydration",
         "ml_features",
-        "feature_retrieval",
         "model_service",
         "wyvern_pipeline",
         "business_logic",
