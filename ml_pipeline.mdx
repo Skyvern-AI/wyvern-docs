@@ -106,4 +106,15 @@ Here we're using the default RankingRequest with the Product entity we just defi
 }
 ```
 
+Here are the ranking API attributes:
+
+- `user_page_size`: Integer. The max number of candidates that ranking API returns. If the number of candidates returned is smaller than wyvernPageSize, it’s the last wyvernPage.
+- `user_page`: Integer. It’s the zero-based index for the ranked “page” of the candidates that are passed to our ranking API. Defaults to 0.
+- `candidate_page_size`: Integer. This is the number of candidates/products your retrieval/search (Elasticsearch for example) returns. It’s the same as the “Elastic size" parameter sent to Elasticsearch. We’re adding a constraint.
+- `candidate_page`: Integer. This is the zero-indexed page number for our candidate set.
+- `request_id`: String. Unique identifier for the request, to join this with the user interaction.
+- `include_events`: Optional booleon. It measn whether the event logs will be included in the response. It is false by default.
+- `query`: The Query object. The search term inputted by the user.
+- `candidates`: The list of products. The product object schema is defined by users. In this example, only the product_id is a required field and other fields are optional in this example.
+
 Next, let's see how data hydration and feature retrieval work to understand how and why Wyvern can make it easy to orchestrates ML features. We will come back to talk about how to set up a wyvern ML pipeline later.
