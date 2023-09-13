@@ -38,7 +38,7 @@ Here's an example of defining features you need for your model inference:
 
 The `manifest_feature_names` is a @cached_property (you can also just do @property but for cached_property gives a little performance advantage) and is a set of feature strings, with each string in the following format:
 
-- for Wyvern's real-time features: `realtime_feature_component_name` + `:` + `feature_name`. The realtime_feature_component_name is the `name` of the RealtimeFeatureComponent you defined. The default name is the class
+- for Wyvern's real-time features: `realtime_feature_component_name` + `:` + `feature_name`. The realtime_feature_component_name is the `name` of the RealtimeFeatureComponent you defined. By default, it is the name of your model class.
 - for batch features: FEATURE_VIEW + `:` + FEATURE_NAME
 
 Wyvern's framework will use features defined under manifest_feature_names
