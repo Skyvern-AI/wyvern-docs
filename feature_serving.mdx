@@ -12,11 +12,11 @@ Wyvern Feature Serving currently integrates with the open source feature store, 
 
 If you have already built your feast features, you can migrate over to your wyvern repository or create new feast code there:
 
-1. Migrate/create your feast code, for example in `my-project/feature-store`.
+1. Migrate/create your feast code, for example in `my-project/feature-store-python/features`.
 
 2. Add the wyvern feature store code:
 
-```python feature-store/main.py
+```python feature-store-python/features/main.py
 from wyvern.feature_store.feature_server import generate_wyvern_store_app
 
 # This import is required currently as Wyvern Feature store needs the real-time feature registry info
@@ -28,7 +28,7 @@ app = generate_wyvern_store_app(path=".")
 3. Run the wyvern feature service:
 
 ```shell
-wyvern run --path feature-store.main:app
+wyvern run --path feature-store-python.features.main:app
 ```
 
 ## Online Store
