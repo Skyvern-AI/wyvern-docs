@@ -59,7 +59,7 @@ What the pipeline does is to get all the features for each product and pass them
 To start building a Wyvern Pipeline, we should define the request schema first. In the ranking case, we start by defining the product and the ranking request schemas:
 
 ```python pipelines/product_ranking/schemas.py
-from wyvern import ProductEntity
+from wyvern import ProductEntity, RankingRequest
 
 
 class Product(ProductEntity):
@@ -106,4 +106,4 @@ Here we're using the default RankingRequest with the Product entity we just defi
 }
 ```
 
-Next, let's see how feature retrieval works to understand and how Wyvern makes it easy to orchestrates ML features. We will come back to talk about how to set up a wyvern ML pipeline later.
+Next, let's see how data hydration and feature retrieval work to understand how and why Wyvern can make it easy to orchestrates ML features. We will come back to talk about how to set up a wyvern ML pipeline later.

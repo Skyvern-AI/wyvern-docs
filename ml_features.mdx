@@ -1,12 +1,18 @@
 ---
-title: "Real-time Features"
+title: "Features In Wyvern"
 description: ""
 icon: "person-running-fast"
 ---
 
-## What is a real-time feature?
+Chip has a fantastic [article](https://huyenchip.com/2022/01/02/real-time-machine-learning-challenges-and-solutions.html) describing real-time ML which covers a lot of explanations of what features are in machine learning.
 
-Real-time features can be used to generate features that are easier to compute and have higher accuracy online than offline. Examples include:
+## Batch Features
+
+Batch features, or offline features, are features extracted from historical data, often with batch processing.
+
+## Real-time Features
+
+Real-time features, or online features, can be used to generate features that are easier to compute and have higher accuracy online than offline. Examples include:
 
 1. Request metadata (user device, user location, etc) — you have 100% accuracy online
 2. Embedding similarity (user x product) — Storage complexity is significantly lower if you compute this online
@@ -15,11 +21,18 @@ Real-time features can be used to generate features that are easier to compute a
 5. Session Embeddings — Capture user interactions on the website ahead of this request and personalize content based on that
 6. External API calls — Some real-time features come from another API request
 
-If you’d like to learn more, Chip has a fantastic [article](https://huyenchip.com/2023/01/08/self-serve-feature-platforms.html#batch-vs-real-time-vs-nrt-features) describing real-time ML.
+## Define Features
 
-## Define Features - RealtimeFeatureComponent
+### Batch Feature Definition
 
-[RealtimeFeatureComponent](https://docs.wyvern.ai/sdk_ref#realtimefeaturecomponent-objects) represents a group of features with the same scope of entity/entities and request.
+[This part is not require for running the template ranking pipeline as that example doesn't depend on any batch features]
+Currently Wyvern's feature store solution is built on top of the open source feature store project [feast](https://feast.dev/). Please check out feast's documentation for building a feature store. We plan to build more integrations with more feature stores in the future.
+
+See how Wyvern [integrates with feast](/feature_serving) to serve features.
+
+### Real-time Feature Definition
+
+Wyvern provides the [RealtimeFeatureComponent](https://docs.wyvern.ai/sdk_ref#realtimefeaturecomponent-objects) to represent a group of features.
 
 For a ML feature, there is usually an entity or a composite of entities that the feature is associated to.
 
@@ -116,7 +129,7 @@ class RealtimeProductQueryFeature(
         )
 ```
 
-## Register Realtime Features
+### Register Realtime Features
 
 Now we go back to the `pipelines/main.py` and register the realtime features with Wyvern service:
 
@@ -134,5 +147,9 @@ app = WyvernService.generate_app(
 ```
 
 To register realtime features, pass the realtime_feature_components, containing the list of your realtime features, to `WyvernService.generate_app`. This basically tells the Wyvern service that these are available realtime features ready.
+
+### Feature Retrieval
+
+Wyvern automates the retrieval of all the features required by your pipeline from the feature store and store the features in memory per request during model inference. Under every Wyvern component class, you can do `self.get_feature(identifier, "feature_name")` to get the feature value. See [get_feature](https://docs.wyvern.ai/sdk_ref#get-feature)
 
 Now that all the batch/offline features and realtime features are ready, let's look at how to define the models.

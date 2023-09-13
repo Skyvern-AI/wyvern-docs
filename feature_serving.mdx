@@ -1,0 +1,43 @@
+---
+title: "Serving Features"
+description: ""
+icon: ""
+---
+
+[Document Work In Progress]
+
+## Wyvern Feature Serving
+
+Wyvern Feature Serving currently integrates with the open source feature store, [feast](https://feast.dev/)
+
+If you have already built your feast features, you can migrate over to your wyvern repository.
+
+First, migrate your feast code to your repository, for example in `my-project/feature-store`.
+
+Secondly, add the wyvern feature store code:
+
+```feature-store/main.py
+from wyvern.feature_store.feature_server import (
+    generate_wyvern_store_app,
+    start_wyvern_store,
+)
+
+# This import is required currently as Wyvern Feature store needs the real-time feature registry info
+from pipelines.main import app as wyvern_app  # noqa: F401
+
+app = generate_wyvern_store_app(path=".")
+```
+
+Lastly, run the wyvern feature service:
+
+```
+wyvern run --path feature-store.main:app
+```
+
+## Online Store
+
+More documentations coming
+
+## Offline Store
+
+More documentations coming
