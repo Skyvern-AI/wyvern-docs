@@ -1,0 +1,138 @@
+---
+title: "Batch Features"
+description: ""
+icon: "database"
+---
+
+## What is a batch feature?
+
+Real-time features can be used to generate features that are easier to compute and have higher accuracy online than offline. Examples include:
+
+1. Request metadata (user device, user location, etc) — you have 100% accuracy online
+2. Embedding similarity (user x product) — Storage complexity is significantly lower if you compute this online
+3. “Facts” about entities (ie product inventory count) — Eliminate the risk of stale (recently uploaded) data
+4. Real-time Embeddings — Capture the long-tail of queries as embedding the query in real-time gives 100% coverage
+5. Session Embeddings — Capture user interactions on the website ahead of this request and personalize content based on that
+6. External API calls — Some real-time features come from another API request
+
+If you’d like to learn more, Chip has a fantastic [article](https://huyenchip.com/2023/01/08/self-serve-feature-platforms.html#batch-vs-real-time-vs-nrt-features) describing real-time ML.
+
+## Define Features - RealtimeFeatureComponent
+
+[RealtimeFeatureComponent](https://docs.wyvern.ai/sdk_ref#realtimefeaturecomponent-objects) represents a group of features with the same scope of entity/entities and request.
+
+For a ML feature, there is usually an entity or a composite of entities that the feature is associated to.
+
+Wyvern's RealtimeFeatureComponent supports single entity and composite entities (with the primary entity and secondary entity). Wyvern also supports the request scope, where you can define the scope of your RealtimeFeatureComponent. For example:
+
+```
+class RealtimeProductFeature(RealtimeFeatureComponent[Product, Any, Any])
+```
+
+This line defines a group of features under `RealtimeProductFeature`. It inherits the RealtimeFeatureComponent with 3 types indicating the entity and the request scope. For this one, there's a group of features for the primary entity, `Product`, as the first type hint to the `RealtimeFeatureComponent`. There is no secondary entity, as the second type hint is `Any`. In another word, it's not a composite entity. These features could be applied under any request condition, as the third type hint is `Any`.
+
+Now let's come back to the ranking example. Let's define five features:
+
+- search_score
+- query_category_similarity
+- query_brand_similarity
+- query_title_similarity
+- query_description_similarity
+
+For each feature, we need to define the entity of the feature. For features that share the same entity, they could also share the same realtime feature component.
+
+The entity for the search score of the candidates is obviously the "product". Here's the definition for the first feature `search_score`:
+
+```python pipelines/product_ranking/realtime_features.py
+from wyvern import FeatureData, RealtimeFeatureComponent, WyvernFeature
+
+
+class RealtimeProductFeature(RealtimeFeatureComponent[Product, Any, Any]):
+    def __init__(self):
+        super().__init__(
+            output_feature_names={
+                "search_score",
+            },
+        )
+
+    async def compute_features(
+        self,
+        primary_entity: Product,
+        request: Any,
+    ) -> Optional[FeatureData]:
+        features: dict[str, WyvernFeature] = {
+            "search_score": primary_entity.search_score or 0.0,
+        }
+
+        return FeatureData(
+            identifier=primary_entity.identifier,
+            features=features,
+        )
+```
+
+For the remaining features, they're all about similarity between the query and a product feature. This is what we call the "CompositeEntity" where the feature is the composite of two different entities, which Product + QueryEntity. Here's the definition of this composite feature group:
+
+```python pipelines/product_ranking/realtime_features.py
+from wyvern import FeatureData, RealtimeFeatureComponent, QueryEntity, WyvernFeature
+
+
+class RealtimeProductQueryFeature(
+    RealtimeFeatureComponent[Product, QueryEntity, Any],
+):
+    def __init__(self):
+        super().__init__(
+            output_feature_names={
+                "query_category_similarity",
+                "query_brand_similarity",
+                "query_title_similarity",
+                "query_description_similarity",
+            },
+        )
+
+    async def compute_composite_features(
+        self,
+        primary_entity: Product,
+        secondary_entity: QueryEntity,
+        request: Any,
+    ) -> Optional[FeatureData]:
+        # compute the potential categories for the query.
+        # In another word, given a query, what are the possible categories
+        #   that the query is referring to with top 3 probability.
+        # For example, if the query is "iphone", the top 3 categories could be "iphone", "iphone case", "iphone charger"
+
+        features: dict[str, WyvernFeature] = {
+            "query_category_similarity": random.random(),
+            "query_brand_similarity": random.random(),
+            "query_title_similarity": random.random(),
+            "query_description_similarity": random.random(),
+        }
+
+        return FeatureData(
+            identifier=CompositeIdentifier(
+                primary_entity.identifier,
+                secondary_entity.identifier,
+            ),
+            features=features,
+        )
+```
+
+## Register Realtime Features
+
+Now we go back to the `pipelines/main.py` and register the realtime features with Wyvern service:
+
+```python pipelines/main.py
+from wyvern import WyvernService
+
+from pipelines.product_ranking.realtime_features import (
+    RealtimeProductFeature,
+    RealtimeProductQueryFeature,
+)
+
+app = WyvernService.generate_app(
+    realtime_feature_components=[RealtimeProductFeature, RealtimeProductQueryFeature],
+)
+```
+
+To register realtime features, pass the realtime_feature_components, containing the list of your realtime features, to `WyvernService.generate_app`. This basically tells the Wyvern service that these are available realtime features ready.
+
+Now that all the batch/offline features and realtime features are ready, let's look at how to define the models.

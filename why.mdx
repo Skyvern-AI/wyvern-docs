@@ -4,13 +4,13 @@ description: "Why was Wyvern born?"
 icon: "face-thinking"
 ---
 
-## Machine Learning Drives Huge Revenue Growth At Marketplaces
+## Revenue Growth Powered by ML
 
 Every marketplace encounters common challenges that can greatly benefit from the application of Machine Learning (ML) solutions. These challenges encompass following areas
 
 ### Search & Discovery
 
-In marketplaces, especially those that sell products, the core product is built to help the buyer find the right products that they're looking for, whether it's through a recommendation email, the recommended products or carousels on the home page or through search results.
+In marketplaces, especially those that sell products, the core product is built to help the buyer find the right products that they're looking for, whether it's through a recommendation email, the recommended products or carousels on the home page or through search results. The creator of Wyvern, [Suchintan](https://www.linkedin.com/in/suchintansingh/), built the ML Platform at [Faire](https://www.faire.com/) and [Gopuff](https://www.gopuff.com/) to improve their Search and Discovery experience. At both places, the platform became an engine that empowered the data team to independently deliver new models to production, generating over \$100M of impact.
 
 ### Fraud Detection
 
@@ -28,13 +28,13 @@ There are so many types of marketplace fruad:
 
 The total cost of ecommerce fraud was expected to be \$48 billion globally this year according to [ekata](https://ekata.com/blog/ecommerce-fraud-trends-and-statistics-merchants-need-to-know-in-2023).
 
-Almost every growing marketplace will face fraudulent action here and there and being able to detect and prevent fraudulent actions would prevent them from losing millions of dallars every year.
+Almost every growing marketplace will face fraudulent events. Being able to detect and prevent fraudulent actions would prevent them from losing millions of dallars every year. This is exactly what the other creator of Wyvern, [Shu](https://www.linkedin.com/in/shuchang-zheng-76784958/) had experienced when he worked at [Lyft](https://www.lyft.com/) and [Patreon](https://www.patreon.com/).
 
 ### Shipping Cost Estimation
 
 Shipping is a key part of the success of a marketplace's or for any brand's success in your marketplace. [48% of the cart abandonments are due to extra costs like shipping and taxes](https://www.printful.com/blog/ecommerce-shipping-pricing).
 
-Marketplaces have a strong will to improve their shipping cost strategy to improve their revenue. Each marketplace has its unique shipping cost insights for which would almost be certain to benefit from customly trained machine learning models. [TODO: write an example]
+Marketplaces have a strong will to optimize their shipping cost strategy as a way to improve their revenue. Each marketplace has its unique shipping cost insights for which would almost be certain to benefit from customly trained machine learning models.
 
 ### Credit Scoring
 
@@ -42,7 +42,7 @@ Lots of marketplaces would provides NET 30/60/90 terms as well as granting credi
 
 In order to provide these terms to users in a marketplace, the marketplace usually has to do background checking to collect information before deciding to assign the terms to you, just like what banks does to approve or deny your credit card. Moreover, they also have to decide how much credit limit the user could get based on the information. Assigning too much credit limit might empower users to purchase more but could also jeopardize the business as there's a bigger risk when crediting more usage limit. Usually this process starts with manual review but it won't scale out soon once the marketplace grows fast.
 
-Machine learning model comes into play to save a lot of cost here for sure. [TODO: give examples]
+Machine learning model comes into play to derisk and automate the process, saving a lot of cost here on operations as a result.
 
 ## Sharing The Cross Learnings
 
@@ -55,24 +55,27 @@ With Wyvern, you would be able to leverage the shared data and share learning ac
 
 ## ML Platform Is Hard To Build
 
-From 2019 to 2022, we built two ML platforms from scratch both at Faire and Gopuff. We've also observed the wide usages of such a platform at a few others (Lyft, Patreon). We intimately understand the pain, substaintial costs and extensive efforts required to build a top-tier ML platform:
+From 2019 to 2022, the creators of Wyvern built two ML platforms from scratch both at Faire and Gopuff. We've also observed the wide usages of such a platform at a few others (Lyft, Patreon). We intimately understand the pain, substaintial costs and extensive efforts required to build a top-tier ML platform:
 
-1. Latency constraints vary across use-cases
-2. Input information needs to be shared across different functions (Fraud + Ranking, or Credit + Ranking)
-3. Most companies rely on ad-hoc notebooks or pipelines to get moving, and start hitting a host of weird errors deploying it out, or making it scale
-4. The cohesion is hard to form between the data team and the engineering team when it comes to building a ML application. 99% of data scientists rely heavily on enigneers to log data in production and build data pipeline to generate training data. It's very challenging to have a standard way to do it.
+1. Feature store to store features (e.g. [feast](https://feast.dev/))
+2. Model service to host ML models (e.g. [tensorflow serving](https://www.tensorflow.org/tfx/guide/serving), [bentoml](https://github.com/bentoml/BentoML))
+3. Feature + Model observability
+4. Orchestration for ML pipeline for specific use-cases
 
-Before we started building such a system a few years ago, we explored multiple vendor solutions in the market for product ranking back then but couldn't find any solution that would empower the team to rapidly iterate on ML models tailored for our own business. We had so much unique business insights so having the control of the models was a no brainer. Therefore, building a ML platform in-house became the only solution.
+While being mindful of the following constraints:
 
-Early in 2023, we talked to 40+ marketplaces, including top marketplaces in the world like Amazon, Etsy and Ebay, and learnt that their ML architecture are almost identical.
+1. Pipeline evaluation in < 200ms (Reference: https://iarapakis.github.io/papers/TOIS17.pdf)
+2. Minimizing train / test skew
 
-We believe there should be a ML platform for marketplaces and designed Wyvern with the following design principles:
+A few years ago, we explored multiple vendor solutions in the market for product ranking back then but couldn't find any solution that would empower the team to rapidly iterate on ML models tailored for our own business. We had so much unique business insights so having the control of the models was a no brainer. Therefore, building a ML platform in-house became the only solution.
 
-1. give the control of the model to the marketplace
-2. enable the Data team to move fast with minimum help from engineers: model training, connecting feature data to the model during inference, and productionizing the ML application effortlessly
+Early in 2023, we talked to 40+ marketplaces, including top marketplaces in the world like Amazon, Etsy and Ebay, and learnt that they all face and share the challenges I've mentioned above.
 
-## Boost The Productivity Of The Data Teams
+<Frame>
+  <img
+    class="w-full h-full"
+    src="https://media.giphy.com/media/zyqgoGEalDVu0/giphy.gif"
+  />
+</Frame>
 
-Building a world-class ML platform isn't the core of any marketplace business. However, the actual model that contains the knowledge of all the unique insights for each marketplace is the core revenue driver.
-
-The Data team, who build the ML model, and the Engineering team, who productionize ML pipeline, often work separately and have a "throw work across the wall" problem. We wanted to make data teams more independent, which greatly inspired us to build Wyvern. With Wyvern, data scientiests get easy access to iterate on features, models, DS-led retrieval, business logic and observability, which greatly help them move fast without the help from engineering.
+We know how hard it could be to bring ML in-house and we deeply believe that there should be a ML platform help marketplaces get through it.
