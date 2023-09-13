@@ -16,7 +16,7 @@ First, migrate your feast code to your repository, for example in `my-project/fe
 
 Secondly, add the wyvern feature store code:
 
-```feature-store/main.py
+```python feature-store/main.py
 from wyvern.feature_store.feature_server import (
     generate_wyvern_store_app,
     start_wyvern_store,
@@ -30,7 +30,7 @@ app = generate_wyvern_store_app(path=".")
 
 Lastly, run the wyvern feature service:
 
-```
+```shell
 wyvern run --path feature-store.main:app
 ```
 
