@@ -55,7 +55,8 @@
         "business_logic",
         "logging_events",
         "experimentation",
-        "observability"
+        "observability",
+        "configurations"
       ]
     },
     {
