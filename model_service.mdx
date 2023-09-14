@@ -45,6 +45,8 @@ Wyvern's framework will use features defined under manifest_feature_names
 
 ## Define the whole model
 
+### Single Model
+
 ```python pipelines/product_ranking/models.py
 import asyncio
 from functools import cached_property
@@ -144,5 +146,13 @@ model_score =
     + 22 * query_title_similarity
     + 13 * query_description_similarity
 ```
+
+#### ModelInput
+
+This is the basic input format of a ModelComponent.
+
+It contains the request information and the list of entities that's related to the model
+
+Reference: https://docs.wyvern.ai/sdk_ref#modelinput-objects
 
 After the model is defined, now let's go back to "Wyvern Pipeline" and see how to set up a pipeline in the code in the next page.

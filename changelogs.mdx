@@ -1,0 +1,21 @@
+---
+title: "Changelogs"
+description: ""
+icon: "signs-post"
+---
+
+## v0.0.18 (Currently under beta testing)
+
+### Model Chaining
+
+Model chaining allows you to chain models together so that the output of one model can be the input to another model. For all the models in the chain, all the request and entities in the model input are the same.
+
+ModelChainComponent
+
+#### ChainedModelInput
+
+This is the input for any models within a model chain. It's a child class of the
+[ModelInput](/model_service#modelinput) and has two additional properties:
+
+- `upstream_model_output`: the output of the upstream model
+- `upstream_model_name`: the name of the upstream model
