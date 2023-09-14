@@ -19,3 +19,29 @@ This is the input for any models within a model chain. It's a child class of the
 
 - `upstream_model_output`: the output of the upstream model
 - `upstream_model_name`: the name of the upstream model
+
+### Support dict as model output
+
+Starting from v0.0.18, Wyvern will support **serializable** dictionary as model output.
+
+If the model output is a dictionary, wyvern will generate the same number of
+model events as the number of keys in the dictionary. For each
+model event ([ModelEventData](/sdk_ref#modeleventdata-objects)), a new optional property `target` will be added and it'll be
+the key. The `ModelEventData.model_output` will be the value of the key in the
+model output.
+
+### Model output cache
+
+Now ModelComponent initialization can take `cache_output` as an optional
+input. If `cache_output` is set to `True`, the model output will be cached.
+The default value is True.
+
+WyvernRequest has a new global map `model_output_map` which is used to
+cache model output. The key of the map is the model name. The value is another
+map (the inner map). They key of the inner map is the entity identifier and
+the value is the model output value.
+
+#### Component.get_model_output
+
+Within any model component, now you can use `self.get_model_output` to get the
+model cached model output.
