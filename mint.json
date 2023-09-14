@@ -71,7 +71,7 @@
     },
     {
       "group": "Advanced",
-      "pages": ["sdk_ref"]
+      "pages": ["sdk_ref", "changelogs"]
     }
   ],
   "footerSocials": {
