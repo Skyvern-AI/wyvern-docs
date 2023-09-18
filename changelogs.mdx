@@ -30,8 +30,9 @@ Starting from v0.0.18, Wyvern will support **serializable** dictionary as model 
 
 If the model output is a dictionary, wyvern will generate the same number of
 model events as the number of keys in the dictionary. For each
-model event ([ModelEventData](/sdk_ref#modeleventdata-objects)), a new optional property `target` will be added and it'll be
-the key. The `ModelEventData.model_output` will be the value of the key in the
+model event ([ModelEventData](/sdk_ref#modeleventdata-objects)), a new
+optional property `model_key` is added to reprent the key of in the
+dictionary. The `ModelEventData.model_output` will be the value of the key in the
 model output.
 
 ### Model output cache
